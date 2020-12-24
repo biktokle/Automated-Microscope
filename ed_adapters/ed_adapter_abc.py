@@ -20,8 +20,8 @@ class EDAdapter(ABC):
         pass
 
     def adapter_loop(self):
+        print('starting ed')
         while 1:
-            print('starting ed')
             im = self.consume_image()
             processed_im = self.process_image(im)
             self.feed_to_event_detector(processed_im)

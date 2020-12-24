@@ -21,8 +21,8 @@ class AMAdapter(ABC):
         pass
 
     def adapter_loop(self):
+        print('starting am')
         while 1:
-            print('starting am')
             cords = self.consume_coords()
             acts = self.read_actions_config()
             acts = self.translate_actions(acts, cords)

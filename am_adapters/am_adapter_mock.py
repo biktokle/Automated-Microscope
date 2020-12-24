@@ -46,5 +46,5 @@ class AMAdapterMock(AMAdapter):
         f = open(global_vars[VARNAMES.translated_actions_file_path.value], 'w')
         f.write(actions)
         f.close()
-        Popen(f'python {ROOT_DIR}\\microscope_action_mock.py {global_vars[VARNAMES.translated_actions_file_path.value]}')
+        Popen(f'python {os.path.join(ROOT_DIR, "microscope_action_mock.py")} {global_vars[VARNAMES.translated_actions_file_path.value]}')
 
