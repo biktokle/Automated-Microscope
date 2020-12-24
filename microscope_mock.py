@@ -1,9 +1,9 @@
 import time
 import tifffile as tiff
 import os
-from definitions import global_vars, VARNAMES
+from definitions import global_vars, VARNAMES, ROOT_DIR
 
-original_im = r'C:\Users\vkoukoul\PycharmProjects\Automated-Microscope\images\\example.tiff'
+original_im = os.path.join(ROOT_DIR, 'images', 'example.tiff')
 
 for i in range(10):
     time.sleep(1)
