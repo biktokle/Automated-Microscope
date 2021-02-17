@@ -11,5 +11,7 @@ def main():
     )
     label.pack()
     window.mainloop()
+
+
 if __name__ == '__main__':
     main()
