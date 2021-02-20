@@ -17,6 +17,16 @@ TITLE = 'Automated Microscope'
 PLACEHOLDER = 'Set Directory'
 
 
+def execute():
+    pass
+
+
+def create_execute(menu):
+    execute_button = Button(menu, text="Execute")
+    execute_button.config(width=BUTTON_WIDTH)
+    execute_button.pack(padx=SPACEX, pady=SPACEY)
+
+
 def create_set_directory(menu):
     set_directory = Label(menu)
     path = Entry(set_directory, font=('Times', FONT_SIZE), foreground='Grey')
@@ -83,10 +93,8 @@ def main():
 
     label.pack()
     menu = Label(root)
-    execute = Button(menu, text="Execute")
-    execute.config(width=BUTTON_WIDTH)
-    execute.pack(padx=30, pady=20)
 
+    create_execute(menu)
     create_set_directory(menu)
     create_combo_boxes(menu)
     create_action_configuration(menu)
