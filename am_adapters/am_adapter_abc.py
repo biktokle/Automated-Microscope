@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class AMAdapter(ABC):
-
+    def __init__(self):
+        self.running = True
 
     @abstractmethod
     def consume_coords(self):
@@ -22,9 +23,13 @@ class AMAdapter(ABC):
 
     def adapter_loop(self):
         print('starting am')
-        while 1:
+        while self.running:
             cords = self.consume_coords()
-            acts = self.read_actions_config()
-            acts = self.translate_actions(acts, cords)
-            self.activate_microscope(acts)
+            if cords is not None:
+                acts = self.read_actions_config()
+                acts = self.translate_actions(acts, cords)
+                self.activate_microscope(acts)
+
+    def stop(self):
+        self.running = False
 
