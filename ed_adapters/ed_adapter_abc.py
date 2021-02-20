@@ -2,10 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class EDAdapter(ABC):
-
-    # @abstractmethod
-    # def __init__(self, path):
-    #     self.path = path
+    def __init__(self):
+        self.running = True
 
     @abstractmethod
     def consume_image(self):
@@ -21,8 +19,12 @@ class EDAdapter(ABC):
 
     def adapter_loop(self):
         print('starting ed')
-        while 1:
+        while self.running:
             im = self.consume_image()
-            processed_im = self.process_image(im)
-            self.feed_to_event_detector(processed_im)
+            if im is not None:
+                processed_im = self.process_image(im)
+                self.feed_to_event_detector(processed_im)
+
+    def stop(self):
+        self.running = False
 

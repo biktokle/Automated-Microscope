@@ -10,8 +10,8 @@ from subprocess import Popen
 
 class AMAdapterMock(AMAdapter):
     def consume_coords(self):
-        while not os.path.exists(global_vars[VARNAMES.coordinates_file_path.value]):
-            time.sleep(0.5)
+        if not os.path.exists(global_vars[VARNAMES.coordinates_file_path.value]):
+            return None
         f = open(global_vars[VARNAMES.coordinates_file_path.value], 'r')
         text = f.read()
         f.close()
