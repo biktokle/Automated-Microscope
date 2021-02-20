@@ -1,5 +1,8 @@
 from tkinter import *
 from tkinter.ttk import *
+from controller import Controller
+
+ctrl = Controller()
 
 BUTTON_WIDTH = 20
 COMBO_BOX_WIDTH = 20
@@ -18,11 +21,11 @@ PLACEHOLDER = 'Set Directory'
 
 
 def execute():
-    pass
+    ctrl.run()
 
 
 def create_execute(menu):
-    execute_button = Button(menu, text="Execute")
+    execute_button = Button(menu, text="Execute", command=execute)
     execute_button.config(width=BUTTON_WIDTH)
     execute_button.pack(padx=SPACEX, pady=SPACEY)
 
