@@ -55,6 +55,9 @@ class GUI:
         menu = Label(root)
         return menu, root
 
+
+
+
     def set_event_detector(self, event):
         choice = event.widget.current()
         self.controller.set_detector(choice)
