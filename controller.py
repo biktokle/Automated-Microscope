@@ -50,7 +50,6 @@ class Controller:
         if not self.detectors:
             for name in os.listdir(global_vars[VARNAMES.ed_path.value]):
                 if os.path.isdir(os.path.join(global_vars[VARNAMES.ed_path.value], name)):
-                    print(name)
                     self.detectors.append(EventDetector(os.path.join(global_vars[VARNAMES.ed_path.value], name)))
         return self.detectors
 

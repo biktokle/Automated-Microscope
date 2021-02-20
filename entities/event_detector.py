@@ -11,6 +11,7 @@ class EventDetector:
         self.detector_path = None
         self.image = None
         self.description = None
+        self.name = os.path.basename(path)
         self.get_data()
 
     def get_data(self):
@@ -20,7 +21,6 @@ class EventDetector:
             if suffix == '.txt':
                 self.description = open(full_path, "r").read()
             elif suffix == '.py':
-                print(full_path)
                 self.detector_path = full_path
             else:
                 try:

@@ -31,8 +31,9 @@ from controller import Controller
 c = Controller()
 c.set_image_path(r'C:\Users\vkoukoul\PycharmProjects\Automated-Microscope\microscope_output')
 x = c.get_detectors()
-c.set_detector(0)
-c.run()
+print(x[0].name)
+# c.set_detector(0)
+# c.run()
 
 
 
