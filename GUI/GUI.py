@@ -2,40 +2,82 @@ from tkinter import *
 from tkinter.ttk import *
 
 BUTTON_WIDTH = 20
+COMBO_BOX_WIDTH = 20
 BROWSE_WIDTH = 10
 PATH_WIDTH = 25
 PATH_HEIGHT = 20
+SPACEX = 20
+SPACEY = 30
+
+TITLE_FONT_SIZE = 30
+FONT_SIZE = 15
+
+WINDOW_DIMENSIONS = '800x600+300+100'
+TITLE = 'Automated Microscope'
+PLACEHOLDER = 'Set Directory'
+
+
+def create_set_directory(menu):
+    set_directory = Label(menu)
+    path = Entry(set_directory, font=('Times', FONT_SIZE), foreground='Grey')
+    path.insert(0, PLACEHOLDER)
+    path.bind("<FocusIn>", lambda args: focus_in_entry_box(path))
+    path.bind("<FocusOut>", lambda args: focus_out_entry_box(path, PLACEHOLDER))
+    path.place(width=PATH_WIDTH, height=PATH_HEIGHT)
+    path.pack(side=LEFT)
+
+    browse = Button(set_directory, text="Browse")
+    browse.config(width=BROWSE_WIDTH)
+    browse.pack()
+    set_directory.pack(padx=SPACEX, pady=SPACEY)
+
+
+def create_combo_boxes(menu):
+    choose_problem_domain = Combobox(menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
+    choose_problem_domain.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
+    choose_problem_domain.set("Choose Problem Domain")
+    choose_problem_domain.pack(padx=SPACEX, pady=SPACEY)
+
+    choose_microscope = Combobox(menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
+    choose_microscope.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
+    choose_microscope.set("Choose Microscope")
+    choose_microscope.pack(padx=SPACEX, pady=SPACEY)
+    choose_microscope['values'] = ("AVI",)
+
+    choose_event_detector = Combobox(menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
+    choose_event_detector.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
+    choose_event_detector.set("Choose Event Detector")
+    choose_event_detector.pack(padx=SPACEX, pady=SPACEY)
+
+
+def create_action_configuration(menu):
+    action_configuration = Button(menu, text="Action Configuration")
+    action_configuration.config(width=BUTTON_WIDTH)
+    action_configuration.pack(padx=SPACEX, pady=SPACEY)
 
 
 def focus_out_entry_box(widget, widget_text):
-    if widget['foreground'] == 'Black' and len(widget.get()) == 0:
+    if widget['foreground'] != 'Grey' and len(widget.get()) == 0:
         widget.delete(0, 'end')
         widget['foreground'] = 'Grey'
         widget.insert(0, widget_text)
 
 
 def focus_in_entry_box(widget):
-    print(widget['foreground'])
-    if widget['foreground'] == 'Grey':
+    if widget['foreground'] != 'Black':
         widget['foreground'] = 'Black'
         widget.delete(0, 'end')
 
 
 def main():
     root = Tk()
-    root.title('Automated Microscope')
-    root.geometry('800x600+300+100')
-    label = Label(
-        root, text="Automated Microscope", font=('Times', 30)
-    )
+    root.title(TITLE)
+    root.geometry(WINDOW_DIMENSIONS)
+    label = Label(root, text=TITLE, font=('Times', TITLE_FONT_SIZE))
 
-    # Create style Object
     style = Style()
-
-    style.configure('TButton', font=('Times', 15),
+    style.configure('TButton', font=('Times', FONT_SIZE),
                     borderwidth='1')
-    # Changes will be reflected
-    # by the movement of mouse.
     style.map('TButton', foreground=[('active', 'black')],
               background=[('active', 'white')])
 
@@ -45,36 +87,11 @@ def main():
     execute.config(width=BUTTON_WIDTH)
     execute.pack(padx=30, pady=20)
 
-    set_directory = Label(menu)
-    path = Entry(set_directory, font=('Times', 15), foreground='Grey')
-    path.insert(0, 'Set Directory')
-    path.bind("<FocusIn>", lambda args: focus_in_entry_box(path))
-    path.bind("<FocusOut>", lambda args: focus_out_entry_box(path, 'Set Directory'))
-    path.place(width=PATH_WIDTH, height=PATH_HEIGHT)
-    path.pack(side=LEFT)
+    create_set_directory(menu)
+    create_combo_boxes(menu)
+    create_action_configuration(menu)
 
-    browse = Button(set_directory, text="Browse")
-    browse.config(width=BROWSE_WIDTH)
-    browse.pack()
-    set_directory.pack(padx=30, pady=20)
-
-    choose_microscope = Button(menu, text="Choose Microscope")
-    choose_microscope.config(width=BUTTON_WIDTH)
-    choose_microscope.pack(padx=30, pady=20)
-
-    choose_microscope = Button(menu, text="Choose Event Detector")
-    choose_microscope.config(width=BUTTON_WIDTH)
-    choose_microscope.pack(padx=30, pady=20)
-
-    choose_problem_domain = Button(menu, text="Choose Problem Domain")
-    choose_problem_domain.config(width=BUTTON_WIDTH)
-    choose_problem_domain.pack(padx=30, pady=20)
-
-    action_configuration = Button(menu, text="Action Configuration")
-    action_configuration.config(width=BUTTON_WIDTH)
-    action_configuration.pack(padx=30, pady=20)
-
-    menu.pack(side=LEFT, )
+    menu.pack(side=LEFT)
     root.mainloop()
 
 
