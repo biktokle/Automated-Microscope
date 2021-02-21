@@ -44,7 +44,7 @@ def create_window(title, dimensions):
     root.geometry(dimensions)
     label = Label(root, text=title, font=('Times', TITLE_FONT_SIZE))
 
-    style = Style()
+    style = Style(root)
     style.configure('TButton', font=('Times', FONT_SIZE),
                     borderwidth='1')
     style.map('TButton', foreground=[('active', 'black')],
