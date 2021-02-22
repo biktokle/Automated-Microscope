@@ -68,6 +68,7 @@ class Controller:
 
     @check_if_running
     def run(self):
+        self.check_if_parameters_set()
         global executing
         executing = True
         self.am_adapter = AMAdapterMock()
@@ -78,6 +79,13 @@ class Controller:
         t1.start()
         t2.start()
 
+    def check_if_parameters_set(self):
+        if self.detector_path is None or self.image_path is None:
+            raise Exception("Parameters are not set")
+
     def stop(self):
-        self.am_adapter.stop()
-        self.ed_adapter.stop()
+        if self.am_adapter is not None:
+            self.am_adapter.stop()
+        if self.ed_adapter is not None:
+            self.ed_adapter.stop()
+        exit(1)

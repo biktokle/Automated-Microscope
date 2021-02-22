@@ -18,49 +18,30 @@ TITLE_FONT_SIZE = 30
 FONT_SIZE = 15
 
 MAIN_WINDOW_DIMENSIONS = '800x600+300+100'
-ACTION_CONFIGURATION_DIMENSIONS = '700x500+350+150'
+
 TITLE = 'Automated Microscope'
-ACTION_CONFIGURATION_TITLE = 'Action Configuration Setup'
+
 PLACEHOLDER = 'Set Directory'
 
 
-def focus_out_entry_box(widget, widget_text):
+def focus_out_entry_box(self, widget, widget_text):
     if widget['foreground'] != 'Grey' and len(widget.get()) == 0:
         widget.delete(0, 'end')
         widget['foreground'] = 'Grey'
         widget.insert(0, widget_text)
 
 
-def focus_in_entry_box(widget):
+def focus_in_entry_box(self, widget):
     if widget['foreground'] != 'Black':
         widget['foreground'] = 'Black'
         if widget.get() == PLACEHOLDER:
             widget.delete(0, 'end')
 
-
-def create_window(title, dimensions):
-    root = Tk()
-    root.title(title)
-    root.geometry(dimensions)
-    label = Label(root, text=title, font=('Times', TITLE_FONT_SIZE))
-
-    style = Style(root)
-    style.configure('TButton', font=('Times', FONT_SIZE),
-                    borderwidth='1')
-    style.map('TButton', foreground=[('active', 'black')],
-              background=[('active', 'white')])
-
-    label.pack()
-    menu = Label(root)
-    return menu, root
-
-
 class MainScreen:
 
     def __init__(self):
         self.controller = Controller()
-
-        self.menu, self.root = create_window(TITLE, MAIN_WINDOW_DIMENSIONS)
+        self.menu, self.root = self.create_window(TITLE, MAIN_WINDOW_DIMENSIONS)
         self.execute_button = self.create_execute(self.menu)
         self.set_directory_button, self.directory_path_label = self.create_set_directory(self.menu)
         self.choose_problem_domain, self.choose_microscope, self.choose_event_detector =\
@@ -68,6 +49,25 @@ class MainScreen:
         self.create_action_button = self.create_action_configuration(self.menu)
 
         self.menu.pack(side=LEFT)
+
+
+
+    def create_window(self, title, dimensions):
+        root = Tk()
+        root.title(title)
+        root.geometry(dimensions)
+        root.protocol("WM_DELETE_WINDOW", self.controller.stop)
+        label = Label(root, text=title, font=('Times', TITLE_FONT_SIZE))
+
+        style = Style(root)
+        style.configure('TButton', font=('Times', FONT_SIZE),
+                        borderwidth='1')
+        style.map('TButton', foreground=[('active', 'black')],
+                  background=[('active', 'white')])
+
+        label.pack()
+        menu = Label(root)
+        return menu, root
 
     def set_problem_domain(self, event):
         choice = event.widget.current()
@@ -135,8 +135,7 @@ class MainScreen:
         return choose_problem_domain, choose_microscope, choose_event_detector
 
     def open_action_configuration(self):
-        menu, root = create_window(ACTION_CONFIGURATION_TITLE, ACTION_CONFIGURATION_DIMENSIONS)
-        ActionConfigurationScreen(menu, root, self.controller).run()
+        ActionConfigurationScreen(self.controller).run()
 
     def create_action_configuration(self, menu):
         action_configuration = Button(menu, text="Action Configuration", command=self.open_action_configuration)
