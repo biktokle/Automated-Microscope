@@ -2,6 +2,7 @@
 import os
 import sys
 from entities.event_detector import EventDetector
+from entities.microscope_manual import MicroscopeManual
 from logs.log_setup import setup_loggers
 from ed_adapters.ed_adapter_mock import EDAdapterMock
 from am_adapters.am_adapter_mock import AMAdapterMock
@@ -17,6 +18,9 @@ executing = False
 setup_loggers()
 info_logger = logging.getLogger('info')
 error_logger = logging.getLogger('exceptions')
+
+MOCK_MAPPING = {"burn": "burn", "zoom in": "zoom in", "zoom out": "zoom out",
+                "position": "position", "report": "report"}
 
 
 def check_if_running(func):
@@ -37,8 +41,8 @@ class Controller:
         self.detector_path = None
         self.image_path = None
         self.problem_domains = ["Cell Fusion - Fly Spit"]
-        self.domain_microscopes = {"Cell Fusion - Fly Spit": ["AVI"]}
-        self.microscopes = {"AVI": None}
+        self.domain_microscopes = {"Cell Fusion - Fly Spit": ["MOCK"]}
+        self.microscopes = {"MOCK": MicroscopeManual(MOCK_MAPPING)}
         self.detectors = []
 
     @check_if_running

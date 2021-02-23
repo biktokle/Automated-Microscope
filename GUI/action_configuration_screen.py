@@ -4,11 +4,14 @@ from controller import Controller
 
 BUTTON_WIDTH = 10
 SPACEX = 20
-SPACEY = 30
+SPACEY = 20
+TEXT_FONT_SIZE = 10
 FONT_SIZE = 15
 ACTION_CONFIGURATION_DIMENSIONS = '700x500+350+150'
 ACTION_CONFIGURATION_TITLE = 'Action Configuration Setup'
 TITLE_FONT_SIZE = 30
+TEXT_HEIGHT = 10
+TEXT_WIDTH = 10
 
 
 class ActionConfigurationScreen:
@@ -16,10 +19,11 @@ class ActionConfigurationScreen:
     def __init__(self, controller):
         self.menu, self.root = self.create_window(ACTION_CONFIGURATION_TITLE, ACTION_CONFIGURATION_DIMENSIONS)
         self.controller = controller
+        self.microscope = self.controller.microscopes[self.controller.microscope]
 
-        self.root.focus_set()
         self.apply_button, self.save_button = self.create_buttons()
-
+        self.actions_menu = self.build_actions_menu()
+        self.configuration_text = self.create_configuration_text()
         self.menu.pack()
 
     def create_window(self, title, dimensions):
@@ -48,8 +52,27 @@ class ActionConfigurationScreen:
         save_button.pack(padx=SPACEX, pady=SPACEY)
         return apply_button, save_button
 
-    def create_save(self):
-        pass
+    def build_lambda(self, action):
+        return lambda: self.add_action(action)
+
+    def build_actions_menu(self):
+        actions_menu = Label(self.root)
+        for action in self.microscope.actions_mappings:
+            action_button = Button(actions_menu, text=action, command=self.build_lambda(action))
+            action_button.config(width=BUTTON_WIDTH)
+            action_button.place(x=100)
+            action_button.pack()
+
+        actions_menu.place(relx=0.25, rely=0.5, anchor='center')
+        return actions_menu
+
+    def create_configuration_text(self):
+        configuration_text = Text(self.root, height=TEXT_HEIGHT, width=TEXT_WIDTH, font=('Times', TEXT_FONT_SIZE))
+        configuration_text.place(relx=0.75, rely=0.5, anchor='center')
+        return configuration_text
+
+    def add_action(self, action):
+        self.configuration_text.insert('0.0', action + '\n')
 
     def run(self):
         self.root.mainloop()

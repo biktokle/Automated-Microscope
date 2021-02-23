@@ -37,6 +37,7 @@ def focus_in_entry_box(self, widget):
         if widget.get() == PLACEHOLDER:
             widget.delete(0, 'end')
 
+
 class MainScreen:
 
     def __init__(self):
@@ -49,8 +50,6 @@ class MainScreen:
         self.create_action_button = self.create_action_configuration(self.menu)
 
         self.menu.pack(side=LEFT)
-
-
 
     def create_window(self, title, dimensions):
         root = Tk()
@@ -135,7 +134,10 @@ class MainScreen:
         return choose_problem_domain, choose_microscope, choose_event_detector
 
     def open_action_configuration(self):
-        ActionConfigurationScreen(self.controller).run()
+        if self.choose_microscope.get() != "Choose Microscope":
+            ActionConfigurationScreen(self.controller).run()
+        else:
+            print("Please choose a microscope")
 
     def create_action_configuration(self, menu):
         action_configuration = Button(menu, text="Action Configuration", command=self.open_action_configuration)
