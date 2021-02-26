@@ -83,6 +83,10 @@ class Controller:
         t1.start()
         t2.start()
 
+    @check_if_running
+    def apply_configuration(self, configuration):
+        print(configuration)
+
     def check_if_parameters_set(self):
         if self.detector_path is None or self.image_path is None:
             raise Exception("Parameters are not set")

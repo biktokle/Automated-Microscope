@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter.ttk import *
 
 from GUI.action_configuration_screen import ActionConfigurationScreen
-from controller import Controller
+from controller.controller import Controller
 from tkinter import filedialog
 
 
@@ -22,20 +22,6 @@ MAIN_WINDOW_DIMENSIONS = '800x600+300+100'
 TITLE = 'Automated Microscope'
 
 PLACEHOLDER = 'Set Directory'
-
-
-def focus_out_entry_box(self, widget, widget_text):
-    if widget['foreground'] != 'Grey' and len(widget.get()) == 0:
-        widget.delete(0, 'end')
-        widget['foreground'] = 'Grey'
-        widget.insert(0, widget_text)
-
-
-def focus_in_entry_box(self, widget):
-    if widget['foreground'] != 'Black':
-        widget['foreground'] = 'Black'
-        if widget.get() == PLACEHOLDER:
-            widget.delete(0, 'end')
 
 
 class MainScreen:
@@ -99,8 +85,8 @@ class MainScreen:
         set_directory = Label(menu)
         path = Entry(set_directory, font=('Times', FONT_SIZE), foreground='Grey')
         path.insert(0, PLACEHOLDER)
-        path.bind("<FocusIn>", lambda args: focus_in_entry_box(path))
-        path.bind("<FocusOut>", lambda args: focus_out_entry_box(path, PLACEHOLDER))
+        path.bind("<FocusIn>", lambda args: self.focus_in_entry_box(path))
+        path.bind("<FocusOut>", lambda args: self.focus_out_entry_box(path, PLACEHOLDER))
         path.place(width=PATH_WIDTH, height=PATH_HEIGHT)
         path.pack(side=LEFT)
 
@@ -144,6 +130,18 @@ class MainScreen:
         action_configuration.config(width=BUTTON_WIDTH)
         action_configuration.pack(padx=SPACEX, pady=SPACEY)
         return action_configuration
+
+    def focus_out_entry_box(self, widget, widget_text):
+        if widget['foreground'] != 'Grey' and len(widget.get()) == 0:
+            widget.delete(0, 'end')
+            widget['foreground'] = 'Grey'
+            widget.insert(0, widget_text)
+
+    def focus_in_entry_box(self, widget):
+        if widget['foreground'] != 'Black':
+            widget['foreground'] = 'Black'
+            if widget.get() == PLACEHOLDER:
+                widget.delete(0, 'end')
 
     def run(self):
         self.root.mainloop()

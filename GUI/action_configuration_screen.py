@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter.ttk import *
-from controller import Controller
 
 BUTTON_WIDTH = 10
 SPACEX = 20
@@ -21,7 +20,7 @@ class ActionConfigurationScreen:
         self.controller = controller
         self.microscope = self.controller.microscopes[self.controller.microscope]
 
-        self.apply_button, self.save_button = self.create_buttons()
+        self.apply_button = self.create_buttons()
         self.actions_menu = self.build_actions_menu()
         self.configuration_text = self.create_configuration_text()
         self.menu.pack()
@@ -43,14 +42,10 @@ class ActionConfigurationScreen:
         return menu, root
 
     def create_buttons(self):
-        apply_button = Button(self.menu, text="Apply")
+        apply_button = Button(self.menu, text="Apply", command=self.apply_configuration)
         apply_button.config(width=BUTTON_WIDTH)
         apply_button.pack(padx=SPACEX, pady=SPACEY)
-
-        save_button = Button(self.menu, text="Save")
-        save_button.config(width=BUTTON_WIDTH)
-        save_button.pack(padx=SPACEX, pady=SPACEY)
-        return apply_button, save_button
+        return apply_button
 
     def build_lambda(self, action):
         return lambda: self.add_action(action)
@@ -72,7 +67,10 @@ class ActionConfigurationScreen:
         return configuration_text
 
     def add_action(self, action):
-        self.configuration_text.insert('0.0', action + '\n')
+        self.configuration_text.insert('end', action + '\n')
+
+    def apply_configuration(self):
+        self.controller.apply_configuration(self.configuration_text.get('0.0', 'end'))
 
     def run(self):
         self.root.mainloop()
