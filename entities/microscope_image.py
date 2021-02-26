@@ -1,8 +1,8 @@
 import imageio
 import matplotlib.pyplot as plt
 
-class MicroscopeImage:
 
+class MicroscopeImage:
     def __init__(self, path):
         self.image = imageio.imread(path)
 

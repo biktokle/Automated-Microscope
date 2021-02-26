@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class AMAdapter(ABC):
-    def __init__(self):
+    def __init__(self, action_configuration):
+        self.action_configuration = action_configuration
         self.running = True
 
     @abstractmethod
@@ -26,7 +27,7 @@ class AMAdapter(ABC):
         while self.running:
             cords = self.consume_coords()
             if cords is not None:
-                acts = self.read_actions_config()
+                acts = self.action_configuration
                 acts = self.translate_actions(acts, cords)
                 self.activate_microscope(acts)
 

@@ -10,9 +10,8 @@ from subprocess import Popen
 class EDAdapterMock(EDAdapter):
 
     def __init__(self, ed_path, image_path):
-        super().__init__()
-        self.ed_path = ed_path
-        self.image_path = image_path
+        super().__init__(ed_path, image_path)
+
 
     def consume_image(self):
         try:
