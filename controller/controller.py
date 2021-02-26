@@ -38,12 +38,13 @@ class Controller:
         self.ed_adapter = None
         self.problem_domain = None
         self.microscope = None
-        self.detector_path = None
         self.image_path = None
+        self.action_config = None
         self.problem_domains = ["Cell Fusion - Fly Spit"]
         self.domain_microscopes = {"Cell Fusion - Fly Spit": ["MOCK"]}
         self.microscopes = {"MOCK": MicroscopeManual(MOCK_MAPPING)}
         self.detectors = []
+        self.chosen_detector = None
 
     @check_if_running
     def get_detectors(self):
@@ -64,7 +65,7 @@ class Controller:
 
     @check_if_running
     def set_detector(self, index):
-        self.detector_path = self.detectors[index].detector_path
+        self.chosen_detector = self.detectors[index]
 
     @check_if_running
     def set_image_path(self, path):
@@ -75,8 +76,8 @@ class Controller:
         self.check_if_parameters_set()
         global executing
         executing = True
-        self.am_adapter = AMAdapterMock()
-        self.ed_adapter = EDAdapterMock(self.detector_path, self.image_path)
+        self.am_adapter = AMAdapterMock(self.action_config)
+        self.ed_adapter = EDAdapterMock(self.chosen_detector.detector_path, self.image_path)
         t1 = Thread(target=self.am_adapter.adapter_loop)
         t2 = Thread(target=self.ed_adapter.adapter_loop)
 
@@ -85,11 +86,18 @@ class Controller:
 
     @check_if_running
     def apply_configuration(self, configuration):
-        print(configuration)
+        self.action_config = configuration
+
 
     def check_if_parameters_set(self):
-        if self.detector_path is None or self.image_path is None:
+        if self.chosen_detector is None or self.image_path is None or self.action_config is None:
             raise Exception("Parameters are not set")
+
+    def get_event_detector(self):
+        return self.chosen_detector
+
+    def get_action_configuration(self):
+        return self.action_config
 
     def stop(self):
         if self.am_adapter is not None:

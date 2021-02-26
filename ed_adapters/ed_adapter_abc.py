@@ -2,7 +2,9 @@ from abc import ABC, abstractmethod
 
 
 class EDAdapter(ABC):
-    def __init__(self):
+    def __init__(self, ed_path, image_path):
+        self.ed_path = ed_path
+        self.image_path = image_path
         self.running = True
 
     @abstractmethod
