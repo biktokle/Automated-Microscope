@@ -10,6 +10,8 @@ from definitions import global_vars, VARNAMES
 import logging
 from threading import Thread
 
+from notification.publisher import Publisher
+
 parent_dir = os.path.split(os.getcwd())[0]
 sys.path.extend([x[0] for x in os.walk(parent_dir) if '.git' not in x[0]])
 
@@ -44,6 +46,7 @@ class Controller:
         self.domain_microscopes = {"Cell Fusion - Fly Spit": ["MOCK"]}
         self.microscopes = {"MOCK": MicroscopeManual(MOCK_MAPPING)}
         self.detectors = []
+        self.publisher = Publisher()
 
     @check_if_running
     def get_detectors(self):
