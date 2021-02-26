@@ -16,6 +16,7 @@ SPACEY = 30
 
 TITLE_FONT_SIZE = 30
 FONT_SIZE = 15
+DESCRIPTION_SIZE = 10
 
 MAIN_WINDOW_DIMENSIONS = '800x600+300+100'
 
@@ -29,11 +30,12 @@ class MainScreen:
     def __init__(self):
         self.controller = Controller()
         self.menu, self.root = self.create_window(TITLE, MAIN_WINDOW_DIMENSIONS)
-        self.execute_button = self.create_execute(self.menu)
-        self.set_directory_button, self.directory_path_label = self.create_set_directory(self.menu)
+        self.execute_button = self.create_execute_button(self.menu)
+        self.set_directory_button, self.directory_path_label = self.create_set_directory()
         self.choose_problem_domain, self.choose_microscope, self.choose_event_detector =\
-            self.create_combo_boxes(self.menu)
+            self.create_combo_boxes()
         self.create_action_button = self.create_action_configuration(self.menu)
+        self.ed_description, self.ac_description = self.create_description()
 
         self.menu.pack(side=LEFT)
 
@@ -42,7 +44,6 @@ class MainScreen:
         root.title(title)
         root.geometry(dimensions)
         root.protocol("WM_DELETE_WINDOW", self.controller.stop)
-        label = Label(root, text=title, font=('Times', TITLE_FONT_SIZE))
 
         style = Style(root)
         style.configure('TButton', font=('Times', FONT_SIZE),
@@ -50,24 +51,13 @@ class MainScreen:
         style.map('TButton', foreground=[('active', 'black')],
                   background=[('active', 'white')])
 
-        label.pack()
+        title_label = Label(root, text=title, font=('Times', TITLE_FONT_SIZE))
+        title_label.pack()
+
         menu = Label(root)
         return menu, root
 
-    def set_problem_domain(self, event):
-        choice = event.widget.current()
-        microscopes = self.controller.set_problem_domain(choice)
-        self.choose_microscope['values'] = microscopes
-
-    def set_microscope(self, event):
-        choice = event.widget.current()
-        self.controller.set_microscope(choice)
-
-    def set_event_detector(self, event):
-        choice = event.widget.current()
-        self.controller.set_detector(choice)
-
-    def create_execute(self, menu):
+    def create_execute_button(self, menu):
         execute_button = Button(menu, text="Execute", command=self.controller.run)
         execute_button.config(width=BUTTON_WIDTH)
         execute_button.pack(padx=SPACEX, pady=SPACEY)
@@ -81,8 +71,8 @@ class MainScreen:
         self.controller.set_image_path(path)
         print(self.directory_path_label.get())
 
-    def create_set_directory(self, menu):
-        set_directory = Label(menu)
+    def create_set_directory(self):
+        set_directory = Label(self.menu)
         path = Entry(set_directory, font=('Times', FONT_SIZE), foreground='Grey')
         path.insert(0, PLACEHOLDER)
         path.bind("<FocusIn>", lambda args: self.focus_in_entry_box(path))
@@ -96,21 +86,21 @@ class MainScreen:
         set_directory.pack(padx=SPACEX, pady=SPACEY)
         return browse, path
 
-    def create_combo_boxes(self, menu):
-        choose_problem_domain = Combobox(menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
+    def create_combo_boxes(self):
+        choose_problem_domain = Combobox(self.menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
         choose_problem_domain.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
         choose_problem_domain.set("Choose Problem Domain")
         choose_problem_domain.pack(padx=SPACEX, pady=SPACEY)
         choose_problem_domain.bind("<<ComboboxSelected>>", self.set_problem_domain)
         choose_problem_domain['values'] = self.controller.problem_domains
 
-        choose_microscope = Combobox(menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
+        choose_microscope = Combobox(self.menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
         choose_microscope.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
         choose_microscope.set("Choose Microscope")
         choose_microscope.bind("<<ComboboxSelected>>", self.set_microscope)
         choose_microscope.pack(padx=SPACEX, pady=SPACEY)
 
-        choose_event_detector = Combobox(menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
+        choose_event_detector = Combobox(self.menu, state="readonly", width=COMBO_BOX_WIDTH, font=('Times', FONT_SIZE))
         choose_event_detector.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
         choose_event_detector.set("Choose Event Detector")
         choose_event_detector.pack(padx=SPACEX, pady=SPACEY)
@@ -119,17 +109,15 @@ class MainScreen:
 
         return choose_problem_domain, choose_microscope, choose_event_detector
 
-    def open_action_configuration(self):
-        if self.choose_microscope.get() != "Choose Microscope":
-            ActionConfigurationScreen(self.controller).run()
-        else:
-            print("Please choose a microscope")
+    def create_description(self):
+        event_detector = Label(self.root, text='Event Detector Description:\n', font=('Times', DESCRIPTION_SIZE),
+                               wraplength=200)
+        event_detector.place(relx=0.55, rely=0.8, anchor='center')
 
-    def create_action_configuration(self, menu):
-        action_configuration = Button(menu, text="Action Configuration", command=self.open_action_configuration)
-        action_configuration.config(width=BUTTON_WIDTH)
-        action_configuration.pack(padx=SPACEX, pady=SPACEY)
-        return action_configuration
+        action_configuration = Label(self.root, text='Action Configuration:\n', font=('Times', DESCRIPTION_SIZE),
+                                     wraplength=200)
+        action_configuration.place(relx=0.85, rely=0.8, anchor='center')
+        return event_detector, action_configuration
 
     def focus_out_entry_box(self, widget, widget_text):
         if widget['foreground'] != 'Grey' and len(widget.get()) == 0:
@@ -142,6 +130,35 @@ class MainScreen:
             widget['foreground'] = 'Black'
             if widget.get() == PLACEHOLDER:
                 widget.delete(0, 'end')
+
+    def get_actions_configuration(self):
+        self.ac_description['text'] = 'Action Configuration:\n' + self.controller.get_action_configuration()
+
+    def open_action_configuration(self):
+        if self.choose_microscope.get() != "Choose Microscope":
+            ActionConfigurationScreen(self.controller, self.get_actions_configuration).run()
+        else:
+            print("Please choose a microscope")
+
+    def create_action_configuration(self, menu):
+        action_configuration = Button(menu, text="Action Configuration", command=self.open_action_configuration)
+        action_configuration.config(width=BUTTON_WIDTH)
+        action_configuration.pack(padx=SPACEX, pady=SPACEY)
+        return action_configuration
+
+    def set_problem_domain(self, event):
+        choice = event.widget.current()
+        microscopes = self.controller.set_problem_domain(choice)
+        self.choose_microscope['values'] = microscopes
+
+    def set_microscope(self, event):
+        choice = event.widget.current()
+        self.controller.set_microscope(choice)
+
+    def set_event_detector(self, event):
+        choice = event.widget.current()
+        self.controller.set_detector(choice)
+        self.ed_description['text'] = 'Event Detector Description:\n' + self.controller.get_event_detector().description
 
     def run(self):
         self.root.mainloop()

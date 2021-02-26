@@ -15,7 +15,8 @@ TEXT_WIDTH = 10
 
 class ActionConfigurationScreen:
 
-    def __init__(self, controller):
+    def __init__(self, controller, on_close):
+        self.on_close = on_close
         self.menu, self.root = self.create_window(ACTION_CONFIGURATION_TITLE, ACTION_CONFIGURATION_DIMENSIONS)
         self.controller = controller
         self.microscope = self.controller.microscopes[self.controller.microscope]
@@ -67,10 +68,14 @@ class ActionConfigurationScreen:
         return configuration_text
 
     def add_action(self, action):
-        self.configuration_text.insert('end', action + '\n')
+        if len(self.configuration_text.get('0.0', 'end')) > 1:
+            self.configuration_text.insert('end', '\n' + action)
+        else:
+            self.configuration_text.insert('end', action)
 
     def apply_configuration(self):
         self.controller.apply_configuration(self.configuration_text.get('0.0', 'end'))
+        self.on_close()
         self.root.destroy()
 
     def run(self):
