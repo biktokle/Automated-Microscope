@@ -71,6 +71,7 @@ class ActionConfigurationScreen:
 
     def apply_configuration(self):
         self.controller.apply_configuration(self.configuration_text.get('0.0', 'end'))
+        self.root.destroy()
 
     def run(self):
         self.root.mainloop()
