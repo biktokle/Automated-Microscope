@@ -37,7 +37,7 @@ class AMAdapterMock(AMAdapter):
                 if act == 'move':
                     ans.append(f'move {x},{y}')
                 else:
-                    ans.append(self.microscope_manual[act])
+                    ans.append(self.microscope_manual.actions_mappings[act])
         return '\n'.join(ans)
 
     def activate_microscope(self, actions):
