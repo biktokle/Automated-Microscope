@@ -27,7 +27,7 @@ MOCK_MAPPING = {"burn": "burn", "zoom in": "zoom in", "zoom out": "zoom out",
 def check_if_running(func):
     def wrap(self, *args, **kwargs):
         if self.executing:
-            self.publisher.publish(Events.executing_event)
+            self.publisher.publish(Events.executing_event, 'Program already running')
         else:
             return func(self, *args, **kwargs)
     return wrap

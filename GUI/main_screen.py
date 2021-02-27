@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
+from tkinter import messagebox
 
 from GUI.action_configuration_screen import ActionConfigurationScreen
 from controller.controller import Controller
@@ -150,8 +151,8 @@ class MainScreen:
     def run(self):
         self.root.mainloop()
 
-    def _on_executing_error(self):
-        print('Show pop up window')
+    def _on_executing_error(self, error_message):
+        messagebox.showerror('Error', error_message)
 
 
 if __name__ == '__main__':
