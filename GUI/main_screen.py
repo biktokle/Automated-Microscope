@@ -1,10 +1,12 @@
 from tkinter import *
 from tkinter.ttk import *
+from tkinter import messagebox
 
 from GUI.action_configuration_screen import ActionConfigurationScreen
 from controller.controller import Controller
 from tkinter import filedialog
 
+from notification.publisher import Events
 
 BUTTON_WIDTH = 20
 COMBO_BOX_WIDTH = 20
@@ -38,6 +40,10 @@ class MainScreen:
         self.ed_description, self.ac_description = self.create_description()
 
         self.menu.pack(side=LEFT)
+
+        # Register Events
+        self.controller.publisher.subscribe(Events.executing_event)(self._on_executing_error)
+
 
     def create_window(self, title, dimensions):
         root = Tk()
@@ -162,6 +168,9 @@ class MainScreen:
 
     def run(self):
         self.root.mainloop()
+
+    def _on_executing_error(self, error_message):
+        messagebox.showerror('Error', error_message)
 
 
 if __name__ == '__main__':
