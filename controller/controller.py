@@ -10,10 +10,11 @@ from definitions import global_vars, VARNAMES
 import logging
 from threading import Thread
 
+from notification.publisher import Publisher, Events
+
 parent_dir = os.path.split(os.getcwd())[0]
 sys.path.extend([x[0] for x in os.walk(parent_dir) if '.git' not in x[0]])
 
-executing = False
 
 setup_loggers()
 info_logger = logging.getLogger('info')
@@ -24,16 +25,26 @@ MOCK_MAPPING = {"burn": "burn", "zoom in": "zoom in", "zoom out": "zoom out",
 
 
 def check_if_running(func):
-    def wrap(*args, **kwargs):
-        if executing:
-            print("bla bla")
+    def wrap(self, *args, **kwargs):
+        if self.executing:
+            self.publisher.publish(Events.executing_event, 'Program already running')
         else:
-            return func(*args, **kwargs)
+            return func(self, *args, **kwargs)
+    return wrap
+
+
+def check_if_parameters_set(func):
+    def wrap(self, *args, **kwargs):
+        if self.chosen_detector is None or self.image_path is None or self.action_config is None:
+            print("Parameters are not set")
+        else:
+            return func(self, *args, **kwargs)
     return wrap
 
 
 class Controller:
     def __init__(self):
+        self.executing = False
         self.am_adapter = None
         self.ed_adapter = None
         self.problem_domain = None
@@ -44,6 +55,7 @@ class Controller:
         self.domain_microscopes = {"Cell Fusion - Fly Spit": ["MOCK"]}
         self.microscopes = {"MOCK": MicroscopeManual(MOCK_MAPPING)}
         self.detectors = []
+        self.publisher = Publisher()
         self.chosen_detector = None
 
     @check_if_running
@@ -71,11 +83,10 @@ class Controller:
     def set_image_path(self, path):
         self.image_path = path
 
+    @check_if_parameters_set
     @check_if_running
     def run(self):
-        self.check_if_parameters_set()
-        global executing
-        executing = True
+        self.executing = True
         self.am_adapter = AMAdapterMock(self.action_config)
         self.ed_adapter = EDAdapterMock(self.chosen_detector.detector_path, self.image_path)
         t1 = Thread(target=self.am_adapter.adapter_loop)
@@ -88,10 +99,6 @@ class Controller:
     def apply_configuration(self, configuration):
         self.action_config = configuration
 
-
-    def check_if_parameters_set(self):
-        if self.chosen_detector is None or self.image_path is None or self.action_config is None:
-            raise Exception("Parameters are not set")
 
     def get_event_detector(self):
         return self.chosen_detector

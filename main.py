@@ -27,7 +27,8 @@
 # ed_adapter.stop()
 from time import sleep
 
-from controller import Controller
+from controller.controller import Controller
+
 c = Controller()
 c.set_image_path(r'C:\Users\vkoukoul\PycharmProjects\Automated-Microscope\microscope_output')
 x = c.get_detectors()
