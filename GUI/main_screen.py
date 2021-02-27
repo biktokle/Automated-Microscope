@@ -5,6 +5,7 @@ from GUI.action_configuration_screen import ActionConfigurationScreen
 from controller.controller import Controller
 from tkinter import filedialog
 
+from notification.publisher import Events
 
 BUTTON_WIDTH = 20
 COMBO_BOX_WIDTH = 20
@@ -34,8 +35,11 @@ class MainScreen:
         self.choose_problem_domain, self.choose_microscope, self.choose_event_detector =\
             self.create_combo_boxes(self.menu)
         self.create_action_button = self.create_action_configuration(self.menu)
-
         self.menu.pack(side=LEFT)
+
+        # Register Events
+        self.controller.publisher.subscribe(Events.executing_event)(self._on_executing_error)
+
 
     def create_window(self, title, dimensions):
         root = Tk()
@@ -145,6 +149,9 @@ class MainScreen:
 
     def run(self):
         self.root.mainloop()
+
+    def _on_executing_error(self):
+        print('Show pop up window')
 
 
 if __name__ == '__main__':

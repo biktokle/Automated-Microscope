@@ -10,7 +10,7 @@ from definitions import global_vars, VARNAMES
 import logging
 from threading import Thread
 
-from notification.publisher import Publisher
+from notification.publisher import Publisher, Events
 
 parent_dir = os.path.split(os.getcwd())[0]
 sys.path.extend([x[0] for x in os.walk(parent_dir) if '.git' not in x[0]])
@@ -27,7 +27,7 @@ MOCK_MAPPING = {"burn": "burn", "zoom in": "zoom in", "zoom out": "zoom out",
 def check_if_running(func):
     def wrap(self, *args, **kwargs):
         if self.executing:
-            print("bla bla")
+            self.publisher.publish(Events.executing_event)
         else:
             return func(self, *args, **kwargs)
     return wrap

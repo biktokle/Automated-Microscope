@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 class Publisher(object):
     def __init__(self):
         self.observers = {}
@@ -17,3 +20,7 @@ class Publisher(object):
             return
         for fn in self.observers[event_name]:
             fn(*args, **kwargs)
+
+
+class Events(Enum):
+    executing_event = 'executing'
