@@ -15,7 +15,7 @@ BROWSE_WIDTH = 10
 PATH_WIDTH = 25
 PATH_HEIGHT = 20
 SPACEX = 20
-SPACEY = 30
+SPACEY = 20
 
 TITLE_FONT_SIZE = 30
 FONT_SIZE = 15
@@ -34,6 +34,7 @@ class MainScreen:
         self.controller = Controller()
         self.menu, self.root = self.create_window(TITLE, MAIN_WINDOW_DIMENSIONS)
         self.execute_button = self.create_execute_button()
+        self.stop_button = self.create_stop_button()
         self.set_directory_button, self.directory_path_label = self.create_set_directory()
         self.choose_problem_domain, self.choose_microscope, self.choose_event_detector =\
             self.create_combo_boxes()
@@ -50,7 +51,7 @@ class MainScreen:
         root = Tk()
         root.title(title)
         root.geometry(dimensions)
-        root.protocol("WM_DELETE_WINDOW", self.controller.stop)
+        root.protocol("WM_DELETE_WINDOW", lambda *args: exit(1))
 
         style = Style(root)
         style.configure('TButton', font=('Times', FONT_SIZE),
@@ -69,6 +70,12 @@ class MainScreen:
         execute_button.config(width=BUTTON_WIDTH)
         execute_button.pack(padx=SPACEX, pady=SPACEY)
         return execute_button
+
+    def create_stop_button(self):
+        stop_button = Button(self.menu, text="Stop", command=self.controller.stop)
+        stop_button.config(width=BUTTON_WIDTH)
+        stop_button.pack(padx=SPACEX, pady=SPACEY)
+        return stop_button
 
     def browse_files(self):
         path = filedialog.askdirectory(initialdir="/", title="Select a directory")
@@ -138,12 +145,12 @@ class MainScreen:
             if widget.get() == PLACEHOLDER:
                 widget.delete(0, 'end')
 
-    def get_actions_configuration(self):
+    def set_actions_configuration(self):
         self.ac_description['text'] = 'Action Configuration:\n' + self.controller.get_action_configuration()
 
     def open_action_configuration(self):
         if self.choose_microscope.get() != "Choose Microscope":
-            ActionConfigurationScreen(self.controller, self.get_actions_configuration).run()
+            ActionConfigurationScreen(self.controller, self.set_actions_configuration).run()
         else:
             print("Please choose a microscope")
 

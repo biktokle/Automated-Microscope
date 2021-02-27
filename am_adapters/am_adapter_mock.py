@@ -36,10 +36,8 @@ class AMAdapterMock(AMAdapter):
             for act in actions.split('\n'):
                 if act == 'move':
                     ans.append(f'move {x},{y}')
-                if act == 'burn':
-                    ans.append('burn')
-                if 'zoom' in act:
-                    ans.append(act)
+                else:
+                    ans.append(self.microscope_manual[act])
         return '\n'.join(ans)
 
     def activate_microscope(self, actions):

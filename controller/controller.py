@@ -90,7 +90,7 @@ class Controller:
     @check_if_running
     def run(self):
         self.executing = True
-        self.am_adapter = AMAdapterMock(self.action_config)
+        self.am_adapter = AMAdapterMock(self.action_config, self.microscopes[self.microscope])
         self.ed_adapter = EDAdapterMock(self.chosen_detector.detector_path, self.image_path)
         t1 = Thread(target=self.am_adapter.adapter_loop)
         t2 = Thread(target=self.ed_adapter.adapter_loop)
@@ -110,8 +110,12 @@ class Controller:
         return self.action_config
 
     def stop(self):
-        if self.am_adapter is not None:
-            self.am_adapter.stop()
-        if self.ed_adapter is not None:
-            self.ed_adapter.stop()
-        exit(1)
+        if self.executing is True:
+            if self.am_adapter is not None:
+                self.am_adapter.stop()
+            if self.ed_adapter is not None:
+                self.ed_adapter.stop()
+            self.executing = False
+            print('Execution is stopped')
+        else:
+            print('System is not being executed')
