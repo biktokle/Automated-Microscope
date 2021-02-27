@@ -7,6 +7,7 @@ from tkinter import filedialog
 
 
 BUTTON_WIDTH = 20
+DESC_WIDTH = 200
 COMBO_BOX_WIDTH = 20
 BROWSE_WIDTH = 10
 PATH_WIDTH = 25
@@ -30,7 +31,7 @@ class MainScreen:
     def __init__(self):
         self.controller = Controller()
         self.menu, self.root = self.create_window(TITLE, MAIN_WINDOW_DIMENSIONS)
-        self.execute_button = self.create_execute_button(self.menu)
+        self.execute_button = self.create_execute_button()
         self.set_directory_button, self.directory_path_label = self.create_set_directory()
         self.choose_problem_domain, self.choose_microscope, self.choose_event_detector =\
             self.create_combo_boxes()
@@ -57,8 +58,8 @@ class MainScreen:
         menu = Label(root)
         return menu, root
 
-    def create_execute_button(self, menu):
-        execute_button = Button(menu, text="Execute", command=self.controller.run)
+    def create_execute_button(self):
+        execute_button = Button(self.menu, text="Execute", command=self.controller.run)
         execute_button.config(width=BUTTON_WIDTH)
         execute_button.pack(padx=SPACEX, pady=SPACEY)
         return execute_button
@@ -111,11 +112,11 @@ class MainScreen:
 
     def create_description(self):
         event_detector = Label(self.root, text='Event Detector Description:\n', font=('Times', DESCRIPTION_SIZE),
-                               wraplength=200)
+                               wraplength=DESC_WIDTH)
         event_detector.place(relx=0.55, rely=0.8, anchor='center')
 
         action_configuration = Label(self.root, text='Action Configuration:\n', font=('Times', DESCRIPTION_SIZE),
-                                     wraplength=200)
+                                     wraplength=DESC_WIDTH)
         action_configuration.place(relx=0.85, rely=0.8, anchor='center')
         return event_detector, action_configuration
 
