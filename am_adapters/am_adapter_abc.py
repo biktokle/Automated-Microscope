@@ -2,8 +2,9 @@ from abc import ABC, abstractmethod
 
 
 class AMAdapter(ABC):
-    def __init__(self, action_configuration):
+    def __init__(self, action_configuration, microscope_manual):
         self.action_configuration = action_configuration
+        self.microscope_manual = microscope_manual
         self.running = True
 
     @abstractmethod
