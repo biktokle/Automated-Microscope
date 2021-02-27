@@ -35,7 +35,10 @@ def check_if_running(func):
 
 def check_if_parameters_set(func):
     def wrap(self, *args, **kwargs):
-        if self.chosen_detector is None or self.image_path is None or self.action_config is None:
+        detector = self.chosen_detector
+        path = self.image_path
+        action_config = self.action_config
+        if detector is None or path is None or action_config is None:
             print("Parameters are not set")
         else:
             return func(self, *args, **kwargs)
