@@ -46,12 +46,15 @@ class MainScreen:
         # Register Events
         self.controller.publisher.subscribe(Events.executing_event)(self._on_executing_error)
 
+    def exit(self):
+        self.controller.stop()
+        exit(1)
 
     def create_window(self, title, dimensions):
         root = Tk()
         root.title(title)
         root.geometry(dimensions)
-        root.protocol("WM_DELETE_WINDOW", lambda *args: exit(1))
+        root.protocol("WM_DELETE_WINDOW", self.exit)
 
         style = Style(root)
         style.configure('TButton', font=('Times', FONT_SIZE),
