@@ -12,7 +12,7 @@ global_vars = {}
 # global_vars['translated_actions_file_path'] = r'C:\Users\vkoukoul\PycharmProjects\Automated-Microscope\translated_actions\\actions.txt'
 
 global_vars['image_path'] = os.path.join(ROOT_DIR, r'microscope_output')
-global_vars['processed_image_path'] = os.path.join(ROOT_DIR, r'processed_images', r'example.tiff')
+global_vars['processed_image_path'] = os.path.join(ROOT_DIR, r'processed_images', r'example.jpg')
 global_vars['ed_path'] = os.path.join(ROOT_DIR, r'detectors')
 global_vars['coordinates_file_path'] = os.path.join(ROOT_DIR, r'coordinates', r'cords.txt')
 global_vars['actions_file_path'] = os.path.join(ROOT_DIR, r'actions_config', r'actions.txt')

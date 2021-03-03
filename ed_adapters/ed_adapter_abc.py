@@ -1,11 +1,14 @@
 from abc import ABC, abstractmethod
 
+from notification.publisher import Publisher
+
 
 class EDAdapter(ABC):
     def __init__(self, ed_path, image_path):
         self.ed_path = ed_path
         self.image_path = image_path
         self.running = True
+        self.publisher = Publisher()
 
     @abstractmethod
     def consume_image(self):

@@ -9,6 +9,10 @@ from subprocess import Popen
 
 
 class AMAdapterMock(AMAdapter):
+
+    def __init__(self, action_configuration, microscope_manual):
+        super().__init__(action_configuration, microscope_manual)
+
     def consume_coords(self):
         if not os.path.exists(global_vars[VARNAMES.coordinates_file_path.value]):
             return None

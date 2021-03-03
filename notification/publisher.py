@@ -24,3 +24,4 @@ class Publisher(object):
 
 class Events(Enum):
     executing_event = 'executing'
+    image_event = 'image'

@@ -95,6 +95,8 @@ class Controller:
         t1 = Thread(target=self.am_adapter.adapter_loop)
         t2 = Thread(target=self.ed_adapter.adapter_loop)
 
+        self.ed_adapter.publisher.subscribe(Events.image_event)(lambda image: self.publisher.publish(Events.image_event, image))
+
         t1.start()
         t2.start()
 

@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
 
+import PIL
+
 from GUI.action_configuration_screen import ActionConfigurationScreen
 from controller.controller import Controller
 from tkinter import filedialog
@@ -16,6 +18,10 @@ PATH_WIDTH = 25
 PATH_HEIGHT = 20
 SPACEX = 20
 SPACEY = 20
+
+IMAGE_CANVAS_WIDTH = 300
+IMAGE_CANVAS_HEIGHT = 300
+IMAGE_BACKGROUND = "gray"
 
 TITLE_FONT_SIZE = 30
 FONT_SIZE = 15
@@ -39,12 +45,14 @@ class MainScreen:
         self.choose_problem_domain, self.choose_microscope, self.choose_event_detector =\
             self.create_combo_boxes()
         self.create_action_button = self.create_action_configuration(self.menu)
+        self.image_canvas = self.create_image_canvas()
         self.ed_description, self.ac_description = self.create_description()
 
         self.menu.pack(side=LEFT)
 
         # Register Events
         self.controller.publisher.subscribe(Events.executing_event)(self._on_executing_error)
+        self.controller.publisher.subscribe(Events.image_event)
 
     def exit(self):
         self.controller.stop()
@@ -136,6 +144,11 @@ class MainScreen:
         action_configuration.place(relx=0.85, rely=0.8, anchor='center')
         return event_detector, action_configuration
 
+    def create_image_canvas(self):
+        image_canvas = Canvas(self.root, width=IMAGE_CANVAS_WIDTH, height=IMAGE_CANVAS_HEIGHT, bg=IMAGE_BACKGROUND)
+        image_canvas.place(relx=0.65, rely=0.4, anchor='center')
+        return image_canvas
+
     def focus_out_entry_box(self, widget, widget_text):
         if widget['foreground'] != 'Grey' and len(widget.get()) == 0:
             widget.delete(0, 'end')
@@ -182,6 +195,10 @@ class MainScreen:
 
     def _on_executing_error(self, error_message):
         messagebox.showerror('Error', error_message)
+
+    def _on_new_image(self, image):
+        pil_image = PIL.Image.fromarray(image)
+        self.image_canvas.create_image(pil_image)
 
 
 if __name__ == '__main__':
