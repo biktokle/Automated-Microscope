@@ -95,7 +95,6 @@ class MainScreen:
         self.directory_path_label.insert(0, path)
         self.directory_path_label['foreground'] = 'Black'
         self.controller.set_image_path(path)
-        print(self.directory_path_label.get())
 
     def create_set_directory(self):
         set_directory = Label(self.menu)

@@ -38,7 +38,6 @@ class AMAdapterMock(AMAdapter):
         ans = []
         for (x, y) in coords:
             for act in actions.split('\n'):
-                print(act)
                 if act == '':
                     continue
                 if act == 'move':
