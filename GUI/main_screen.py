@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
 
-import PIL
+from PIL import Image, ImageTk
 
 from GUI.action_configuration_screen import ActionConfigurationScreen
 from controller.controller import Controller
@@ -37,6 +37,7 @@ PLACEHOLDER = 'Set Directory'
 class MainScreen:
 
     def __init__(self):
+        self.images = []
         self.controller = Controller()
         self.menu, self.root = self.create_window(TITLE, MAIN_WINDOW_DIMENSIONS)
         self.execute_button = self.create_execute_button()
@@ -52,7 +53,7 @@ class MainScreen:
 
         # Register Events
         self.controller.publisher.subscribe(Events.executing_event)(self._on_executing_error)
-        self.controller.publisher.subscribe(Events.image_event)
+        self.controller.publisher.subscribe(Events.image_event)(self._on_new_image)
 
     def exit(self):
         self.controller.stop()
@@ -197,8 +198,9 @@ class MainScreen:
         messagebox.showerror('Error', error_message)
 
     def _on_new_image(self, image):
-        pil_image = PIL.Image.fromarray(image)
-        self.image_canvas.create_image(pil_image)
+        tk_image = ImageTk.PhotoImage(Image.fromarray(image).resize((300, 300), Image.ANTIALIAS))
+        self.images.append(tk_image)
+        self.image_canvas.create_image(0, 0, image=tk_image, anchor="nw")
 
 
 if __name__ == '__main__':

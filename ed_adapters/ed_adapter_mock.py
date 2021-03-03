@@ -1,6 +1,8 @@
+from time import sleep
+
 import imageio
 from skimage import io
-
+import matplotlib.pyplot as plt
 from ed_adapters.ed_adapter_abc import EDAdapter
 from definitions import global_vars, VARNAMES
 import os
@@ -38,9 +40,18 @@ class EDAdapterMock(EDAdapter):
         # if len(files) > 1:
         #     raise Exception('More than one image in directory, ambiguous')
         full_path = os.path.join(self.image_path, files[0])
-        print(full_path)
-        image = io.imread(full_path)
-        os.remove(full_path)
+        sleep(0.1)
+        image = None
+        while image is None:
+            try:
+                image = io.imread(full_path, plugin='matplotlib')
+            except Exception as e:
+                sleep(0.1)
+        while os.path.exists(full_path):
+            try:
+                os.remove(full_path)
+            except Exception as e:
+                sleep(0.1)
         return image
 
     def process_image(self, im):

@@ -95,10 +95,14 @@ class Controller:
         t1 = Thread(target=self.am_adapter.adapter_loop)
         t2 = Thread(target=self.ed_adapter.adapter_loop)
 
-        self.ed_adapter.publisher.subscribe(Events.image_event)(lambda image: self.publisher.publish(Events.image_event, image))
+        self.ed_adapter.publisher.subscribe(Events.image_event)(self.forward_image)
 
         t1.start()
         t2.start()
+
+    def forward_image(self, image):
+        self.publisher.publish(Events.image_event, image)
+
 
     @check_if_running
     def apply_configuration(self, configuration):
@@ -121,3 +125,4 @@ class Controller:
             print('Execution is stopped')
         else:
             print('System is not being executed')
+
