@@ -3,6 +3,7 @@ import os
 import sys
 from entities.event_detector import EventDetector
 from entities.microscope_manual import MicroscopeManual
+from entities.user_settings import UserSettings
 from logs.log_setup import setup_loggers
 from ed_adapters.ed_adapter_mock import EDAdapterMock
 from am_adapters.am_adapter_mock import AMAdapterMock
@@ -20,8 +21,7 @@ setup_loggers()
 info_logger = logging.getLogger('info')
 error_logger = logging.getLogger('exceptions')
 
-MOCK_MAPPING = {"burn": "burn", "zoom in": "zoom in", "zoom out": "zoom out",
-                "position": "position", "report": "report"}
+AVI_SETTINGS = ['intervals', 't_points', 'channel', 'exposure', 'laser_power']
 
 
 def check_if_running(func):
@@ -37,8 +37,8 @@ def check_if_parameters_set(func):
     def wrap(self, *args, **kwargs):
         detector = self.chosen_detector
         path = self.image_path
-        action_config = self.action_config
-        if detector is None or path is None or action_config is None:
+        user_settings = self.user_settings
+        if detector is None or path is None or user_settings is None:
             print("Parameters are not set")
         else:
             return func(self, *args, **kwargs)
@@ -53,10 +53,10 @@ class Controller:
         self.problem_domain = None
         self.microscope = None
         self.image_path = None
-        self.action_config = None
+        self.user_settings = None
         self.problem_domains = ["Cell Fusion - Fly Spit"]
-        self.domain_microscopes = {"Cell Fusion - Fly Spit": ["MOCK"]}
-        self.microscopes = {"MOCK": MicroscopeManual(MOCK_MAPPING)}
+        self.domain_microscopes = {"Cell Fusion - Fly Spit": ["AVI"]}
+        self.microscopes = {("Cell Fusion - Fly Spit", "AVI"): MicroscopeManual(AVI_SETTINGS)}
         self.detectors = []
         self.publisher = Publisher()
         self.chosen_detector = None
@@ -90,7 +90,7 @@ class Controller:
     @check_if_running
     def run(self):
         self.executing = True
-        self.am_adapter = AMAdapterMock(self.action_config, self.microscopes[self.microscope])
+        self.am_adapter = AMAdapterMock(self.user_settings, self.microscopes[(self.problem_domain, self.microscope)])
         self.ed_adapter = EDAdapterMock(self.chosen_detector.detector_path, self.image_path)
         t1 = Thread(target=self.am_adapter.adapter_loop)
         t2 = Thread(target=self.ed_adapter.adapter_loop)
@@ -105,15 +105,18 @@ class Controller:
 
 
     @check_if_running
-    def apply_configuration(self, configuration):
-        self.action_config = configuration
+    def apply_settings(self, values):
+        settings = {}
+        for key, value in zip(self.microscopes[(self.problem_domain, self.microscope)].settings_keys, values):
+            settings[key] = value
+        self.user_settings = UserSettings(settings)
 
 
     def get_event_detector(self):
         return self.chosen_detector
 
-    def get_action_configuration(self):
-        return self.action_config
+    def get_user_settings(self):
+        return self.user_settings.settings_map
 
     def stop(self):
         if self.executing is True:

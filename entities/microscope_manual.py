@@ -1,5 +1,5 @@
 class MicroscopeManual:
 
-    def __init__(self, actions_mappings):
-        self.actions_mappings = actions_mappings
+    def __init__(self, settings_keys):
+        self.settings_keys = settings_keys
 
