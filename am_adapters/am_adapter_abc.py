@@ -31,9 +31,7 @@ class AMAdapter(ABC):
         while self.running:
             cords = self.consume_coords()
             if cords is not None:
-                acts = self.action_configuration
-                acts = self.translate_actions(acts, cords)
-                self.activate_microscope(acts)
+                self.activate_microscope(cords)
 
     def stop(self):
         self.running = False
