@@ -25,3 +25,4 @@ class Publisher(object):
 class Events(Enum):
     executing_event = 'executing'
     image_event = 'image'
+    model_detection_event = 'model_detection'

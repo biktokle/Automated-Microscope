@@ -95,6 +95,7 @@ class Controller:
         t1 = Thread(target=self.am_adapter.adapter_loop)
         t2 = Thread(target=self.ed_adapter.adapter_loop)
 
+        self.publisher.subscribe(Events.model_detection_event)(self.forward_model_detection)
         self.ed_adapter.publisher.subscribe(Events.image_event)(self.forward_image)
 
         t1.start()
@@ -103,6 +104,8 @@ class Controller:
     def forward_image(self, image):
         self.publisher.publish(Events.image_event, image)
 
+    def forward_model_detection(self, coords):
+        self.am_adapter.publisher.publish(Events.model_detection_event, coords)
 
     @check_if_running
     def apply_settings(self, values):
@@ -110,7 +113,6 @@ class Controller:
         for key, value in zip(self.microscopes[(self.problem_domain, self.microscope)].settings_keys, values):
             settings[key] = value
         self.user_settings = UserSettings(settings)
-
 
     def get_event_detector(self):
         return self.chosen_detector
