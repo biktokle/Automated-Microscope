@@ -4,7 +4,7 @@ from tkinter import messagebox
 
 from PIL import Image, ImageTk
 
-from GUI.action_configuration_screen import ActionConfigurationScreen
+from GUI.user_settings_screen import UserSettingsScreen
 from controller.controller import Controller
 from tkinter import filedialog
 
@@ -45,9 +45,9 @@ class MainScreen:
         self.set_directory_button, self.directory_path_label = self.create_set_directory()
         self.choose_problem_domain, self.choose_microscope, self.choose_event_detector =\
             self.create_combo_boxes()
-        self.create_action_button = self.create_action_configuration(self.menu)
+        self.create_user_settings = self.create_user_settings(self.menu)
         self.image_canvas = self.create_image_canvas()
-        self.ed_description, self.ac_description = self.create_description()
+        self.ed_description, self.us_description = self.create_description()
 
         self.menu.pack(side=LEFT)
 
@@ -139,10 +139,10 @@ class MainScreen:
                                wraplength=DESC_WIDTH)
         event_detector.place(relx=0.55, rely=0.8, anchor='center')
 
-        action_configuration = Label(self.root, text='Action Configuration:\n', font=('Times', DESCRIPTION_SIZE),
-                                     wraplength=DESC_WIDTH)
-        action_configuration.place(relx=0.85, rely=0.8, anchor='center')
-        return event_detector, action_configuration
+        user_settings = Label(self.root, text='User Settings:\n', font=('Times', DESCRIPTION_SIZE),
+                              wraplength=DESC_WIDTH)
+        user_settings.place(relx=0.85, rely=0.8, anchor='center')
+        return event_detector, user_settings
 
     def create_image_canvas(self):
         image_canvas = Canvas(self.root, width=IMAGE_CANVAS_WIDTH, height=IMAGE_CANVAS_HEIGHT, bg=IMAGE_BACKGROUND)
@@ -161,20 +161,20 @@ class MainScreen:
             if widget.get() == PLACEHOLDER:
                 widget.delete(0, 'end')
 
-    def set_actions_configuration(self):
-        self.ac_description['text'] = 'Action Configuration:\n' + self.controller.get_action_configuration()
+    def set_user_settings(self):
+        self.us_description['text'] = 'User Settings:\n' + str(self.controller.get_user_settings())
 
-    def open_action_configuration(self):
+    def open_user_settings(self):
         if self.choose_microscope.get() != "Choose Microscope":
-            ActionConfigurationScreen(self.controller, self.set_actions_configuration).run()
+            UserSettingsScreen(self.controller, self.set_user_settings).run()
         else:
             print("Please choose a microscope")
 
-    def create_action_configuration(self, menu):
-        action_configuration = Button(menu, text="Action Configuration", command=self.open_action_configuration)
-        action_configuration.config(width=BUTTON_WIDTH)
-        action_configuration.pack(padx=SPACEX, pady=SPACEY)
-        return action_configuration
+    def create_user_settings(self, menu):
+        user_settings = Button(menu, text="User Settings", command=self.open_user_settings)
+        user_settings.config(width=BUTTON_WIDTH)
+        user_settings.pack(padx=SPACEX, pady=SPACEY)
+        return user_settings
 
     def set_problem_domain(self, event):
         choice = event.widget.current()
