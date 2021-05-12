@@ -16,18 +16,18 @@ COMBO_BOX_WIDTH = 20
 BROWSE_WIDTH = 10
 PATH_WIDTH = 25
 PATH_HEIGHT = 20
-SPACEX = 20
+SPACEX = 200
 SPACEY = 20
 
-IMAGE_CANVAS_WIDTH = 300
-IMAGE_CANVAS_HEIGHT = 300
+IMAGE_CANVAS_WIDTH = 1000
+IMAGE_CANVAS_HEIGHT = 1000
 IMAGE_BACKGROUND = "gray"
 
-TITLE_FONT_SIZE = 30
+TITLE_FONT_SIZE = 40
 FONT_SIZE = 15
 DESCRIPTION_SIZE = 10
 
-MAIN_WINDOW_DIMENSIONS = '800x600+300+100'
+MAIN_WINDOW_DIMENSIONS = '1800x1000'
 
 TITLE = 'Automated Microscope'
 
@@ -61,6 +61,7 @@ class MainScreen:
 
     def create_window(self, title, dimensions):
         root = Tk()
+        root.state('zoomed')
         root.title(title)
         root.geometry(dimensions)
         root.protocol("WM_DELETE_WINDOW", self.exit)
@@ -72,7 +73,7 @@ class MainScreen:
                   background=[('active', 'white')])
 
         title_label = Label(root, text=title, font=('Times', TITLE_FONT_SIZE))
-        title_label.pack()
+        title_label.place(relx=0.2, rely=0.1, anchor='center')
 
         menu = Label(root)
         return menu, root
@@ -137,16 +138,16 @@ class MainScreen:
     def create_description(self):
         event_detector = Label(self.root, text='Event Detector Description:\n', font=('Times', DESCRIPTION_SIZE),
                                wraplength=DESC_WIDTH)
-        event_detector.place(relx=0.55, rely=0.8, anchor='center')
+        event_detector.place(relx=0.1, rely=0.8, anchor='center')
 
         user_settings = Label(self.root, text='User Settings:\n', font=('Times', DESCRIPTION_SIZE),
                               wraplength=DESC_WIDTH)
-        user_settings.place(relx=0.85, rely=0.8, anchor='center')
+        user_settings.place(relx=0.3, rely=0.8, anchor='center')
         return event_detector, user_settings
 
     def create_image_canvas(self):
         image_canvas = Canvas(self.root, width=IMAGE_CANVAS_WIDTH, height=IMAGE_CANVAS_HEIGHT, bg=IMAGE_BACKGROUND)
-        image_canvas.place(relx=0.65, rely=0.4, anchor='center')
+        image_canvas.place(relx=0.7, rely=0.5, anchor='center')
         return image_canvas
 
     def focus_out_entry_box(self, widget, widget_text):
@@ -197,7 +198,7 @@ class MainScreen:
         messagebox.showerror('Error', error_message)
 
     def _on_new_image(self, image):
-        tk_image = ImageTk.PhotoImage(Image.fromarray(image).resize((300, 300), Image.ANTIALIAS))
+        tk_image = ImageTk.PhotoImage(Image.fromarray(image).resize((IMAGE_CANVAS_WIDTH, IMAGE_CANVAS_HEIGHT), Image.ANTIALIAS))
         self.images.append(tk_image)
         self.image_canvas.create_image(0, 0, image=tk_image, anchor="nw")
 

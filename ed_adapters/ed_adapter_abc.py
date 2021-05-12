@@ -4,8 +4,8 @@ from notification.publisher import Publisher
 
 
 class EDAdapter(ABC):
-    def __init__(self, ed_path, image_path):
-        self.ed_path = ed_path
+    def __init__(self, detector, image_path):
+        self.detector = detector
         self.image_path = image_path
         self.running = True
         self.publisher = Publisher()

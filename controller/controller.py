@@ -1,6 +1,8 @@
 
 import os
 import sys
+
+from ed_adapters.ed_adapter_cell_detection import EDAdapterCellDetection
 from entities.event_detector import EventDetector
 from entities.microscope_manual import MicroscopeManual
 from entities.user_settings import UserSettings
@@ -65,6 +67,8 @@ class Controller:
     def get_detectors(self):
         if not self.detectors:
             for name in os.listdir(global_vars[VARNAMES.ed_path.value]):
+                if name != 'cell_detection':
+                    continue
                 if os.path.isdir(os.path.join(global_vars[VARNAMES.ed_path.value], name)):
                     self.detectors.append(EventDetector(os.path.join(global_vars[VARNAMES.ed_path.value], name)))
         return self.detectors
@@ -89,9 +93,12 @@ class Controller:
     @check_if_parameters_set
     @check_if_running
     def run(self):
+        for file in os.listdir(self.image_path):
+            os.remove(os.path.join(self.image_path, file))
         self.executing = True
         self.am_adapter = AMAdapterMock(self.user_settings, self.microscopes[(self.problem_domain, self.microscope)])
-        self.ed_adapter = EDAdapterMock(self.chosen_detector.detector_path, self.image_path)
+        self.chosen_detector.detector.init_detector()
+        self.ed_adapter = EDAdapterCellDetection(self.chosen_detector, self.image_path)
         t1 = Thread(target=self.am_adapter.adapter_loop)
         t2 = Thread(target=self.ed_adapter.adapter_loop)
 

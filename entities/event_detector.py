@@ -2,6 +2,7 @@ import pathlib
 import os
 import imageio
 
+from detectors.cell_detection.cell_detection import Detector
 from entities.microscope_image import MicroscopeImage
 
 
@@ -13,6 +14,7 @@ class EventDetector:
         self.description = None
         self.name = os.path.basename(path)
         self.get_data()
+        self.detector = Detector(0.5)
 
     def get_data(self):
         for name in os.listdir(self.path):
