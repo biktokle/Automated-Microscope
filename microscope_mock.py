@@ -1,8 +1,4 @@
 import time
-
-import cv2
-import imageio
-import tifffile as tiff
 import os
 import numpy as np
 from skimage import io

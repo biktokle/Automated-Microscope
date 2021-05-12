@@ -1,6 +1,5 @@
 import pathlib
 import os
-import imageio
 
 from detectors.cell_detection.cell_detection import Detector
 from entities.microscope_image import MicroscopeImage
