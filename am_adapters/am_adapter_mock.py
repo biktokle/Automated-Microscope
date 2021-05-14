@@ -1,8 +1,6 @@
 from am_adapters.am_adapter_abc import AMAdapter
 from definitions import global_vars, VARNAMES, ROOT_DIR
 import os
-import time
-import tifffile as tiff
 from subprocess import Popen
 
 

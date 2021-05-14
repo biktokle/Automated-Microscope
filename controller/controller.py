@@ -93,6 +93,7 @@ class Controller:
     @check_if_parameters_set
     @check_if_running
     def run(self):
+        # delete images from working dir
         for file in os.listdir(self.image_path):
             os.remove(os.path.join(self.image_path, file))
         self.executing = True
