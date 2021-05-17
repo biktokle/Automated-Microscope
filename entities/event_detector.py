@@ -1,7 +1,5 @@
 import pathlib
 import os
-
-from detectors.cell_detection.cell_detection import Detector
 from entities.microscope_image import MicroscopeImage
 
 
@@ -10,14 +8,16 @@ class EventDetector:
         self.path = path
         self.detector_path = None
         self.image = None
-        self.description = None
+        self.description = ""
         self.name = os.path.basename(path)
         self.get_data()
-        self.detector = Detector(0.5)
 
     def get_data(self):
         for name in os.listdir(self.path):
             suffix = pathlib.Path(os.path.join(self.path, name)).suffix
+            prefix = pathlib.Path(os.path.join(self.path, name)).stem
+            if prefix != self.name:
+                continue
             full_path = os.path.join(self.path, name)
             if suffix == '.txt':
                 self.description = open(full_path, "r").read()
