@@ -58,5 +58,5 @@ class EDAdapterMock(EDAdapter):
         self.publisher.publish(Events.image_event, im)
         io.imsave(global_vars[VARNAMES.processed_image_path.value], im)
 
-    def feed_to_event_detector(self, processed_im):
+    def feed_to_event_detector(self, processed_im, full_path):
         Popen(f'python {self.ed_path} {global_vars[VARNAMES.processed_image_path.value]} {global_vars[VARNAMES.coordinates_file_path.value]}')

@@ -2,7 +2,7 @@
 import os
 import sys
 
-from ed_adapters.ed_adapter_cell_detection import EDAdapterCellDetection
+from ed_adapters.ed_adapter_default import EDAdapterDefault
 from entities.event_detector import EventDetector
 from entities.microscope_manual import MicroscopeManual
 from entities.user_settings import UserSettings
@@ -17,6 +17,7 @@ from notification.publisher import Publisher, Events
 
 parent_dir = os.path.split(os.getcwd())[0]
 sys.path.extend([x[0] for x in os.walk(parent_dir) if '.git' not in x[0]])
+
 
 
 setup_loggers()
@@ -56,6 +57,7 @@ class Controller:
         self.microscope = None
         self.image_path = None
         self.user_settings = None
+        self.detectors_path = None
         self.problem_domains = ["Cell Fusion - Fly Spit"]
         self.domain_microscopes = {"Cell Fusion - Fly Spit": ["AVI"]}
         self.microscopes = {("Cell Fusion - Fly Spit", "AVI"): MicroscopeManual(AVI_SETTINGS)}
@@ -66,11 +68,9 @@ class Controller:
     @check_if_running
     def get_detectors(self):
         if not self.detectors:
-            for name in os.listdir(global_vars[VARNAMES.ed_path.value]):
-                if name != 'cell_detection':
-                    continue
-                if os.path.isdir(os.path.join(global_vars[VARNAMES.ed_path.value], name)):
-                    self.detectors.append(EventDetector(os.path.join(global_vars[VARNAMES.ed_path.value], name)))
+            for name in os.listdir(self.detectors_path):
+                if os.path.isdir(os.path.join(self.detectors_path, name)):
+                    self.detectors.append(EventDetector(os.path.join(self.detectors_path, name)))
         return self.detectors
 
     @check_if_running
@@ -90,6 +90,10 @@ class Controller:
     def set_image_path(self, path):
         self.image_path = path
 
+    @check_if_running
+    def set_detectors_path(self, path):
+        self.detectors_path = path
+
     @check_if_parameters_set
     @check_if_running
     def run(self):
@@ -98,8 +102,7 @@ class Controller:
             os.remove(os.path.join(self.image_path, file))
         self.executing = True
         self.am_adapter = AMAdapterMock(self.user_settings, self.microscopes[(self.problem_domain, self.microscope)])
-        self.chosen_detector.detector.init_detector()
-        self.ed_adapter = EDAdapterCellDetection(self.chosen_detector, self.image_path)
+        self.ed_adapter = EDAdapterDefault(self.chosen_detector, self.image_path)
         t1 = Thread(target=self.am_adapter.adapter_loop)
         t2 = Thread(target=self.ed_adapter.adapter_loop)
 

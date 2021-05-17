@@ -47,7 +47,7 @@ class EDAdapterCellDetection(EDAdapter):
         return image_to_8bit_equalized(im)
 
 
-    def feed_to_event_detector(self, processed_im):
+    def feed_to_event_detector(self, processed_im, full_path):
         xmin, xmax, ymin, ymax = tuple(map(lambda x: int(x), self.regions[0].split(',')))
         region_im = processed_im[ymin:ymax, xmin:xmax]
         img = self.detector.detector.detect(region_im)

@@ -32,6 +32,7 @@ MAIN_WINDOW_DIMENSIONS = '1800x1000'
 TITLE = 'Automated Microscope'
 
 PLACEHOLDER = 'Set Directory'
+PLACEHOLDER_DETECTORS = 'Set Detectors Directory'
 
 
 class MainScreen:
@@ -43,6 +44,7 @@ class MainScreen:
         self.execute_button = self.create_execute_button()
         self.stop_button = self.create_stop_button()
         self.set_directory_button, self.directory_path_label = self.create_set_directory()
+        self.set_detectors_directory_button, self.detectors_directory_path_label = self.create_set_detectors_path()
         self.choose_problem_domain, self.choose_microscope, self.choose_event_detector =\
             self.create_combo_boxes()
         self.create_user_settings = self.create_user_settings(self.menu)
@@ -97,16 +99,39 @@ class MainScreen:
         self.directory_path_label['foreground'] = 'Black'
         self.controller.set_image_path(path)
 
+    def browse_files_detectors(self):
+        path = filedialog.askdirectory(initialdir="/", title="Select a directory")
+        self.detectors_directory_path_label.delete(0, 'end')
+        self.detectors_directory_path_label.insert(0, path)
+        self.detectors_directory_path_label['foreground'] = 'Black'
+        self.controller.set_detectors_path(path)
+        self.choose_event_detector['values'] = [x.name for x in self.controller.get_detectors()]
+
     def create_set_directory(self):
         set_directory = Label(self.menu)
         path = Entry(set_directory, font=('Times', FONT_SIZE), foreground='Grey')
         path.insert(0, PLACEHOLDER)
-        path.bind("<FocusIn>", lambda args: self.focus_in_entry_box(path))
+        path.bind("<FocusIn>", lambda args: self.focus_in_entry_box(path, PLACEHOLDER))
         path.bind("<FocusOut>", lambda args: self.focus_out_entry_box(path, PLACEHOLDER))
         path.place(width=PATH_WIDTH, height=PATH_HEIGHT)
         path.pack(side=LEFT)
 
         browse = Button(set_directory, text="Browse", command=self.browse_files)
+        browse.config(width=BROWSE_WIDTH)
+        browse.pack()
+        set_directory.pack(padx=SPACEX, pady=SPACEY)
+        return browse, path
+
+    def create_set_detectors_path(self):
+        set_directory = Label(self.menu)
+        path = Entry(set_directory, font=('Times', FONT_SIZE), foreground='Grey')
+        path.insert(0, PLACEHOLDER_DETECTORS)
+        path.bind("<FocusIn>", lambda args: self.focus_in_entry_box(path, PLACEHOLDER_DETECTORS))
+        path.bind("<FocusOut>", lambda args: self.focus_out_entry_box(path, PLACEHOLDER_DETECTORS))
+        path.place(width=PATH_WIDTH, height=PATH_HEIGHT)
+        path.pack(side=LEFT)
+
+        browse = Button(set_directory, text="Browse", command=self.browse_files_detectors)
         browse.config(width=BROWSE_WIDTH)
         browse.pack()
         set_directory.pack(padx=SPACEX, pady=SPACEY)
@@ -131,7 +156,6 @@ class MainScreen:
         choose_event_detector.set("Choose Event Detector")
         choose_event_detector.pack(padx=SPACEX, pady=SPACEY)
         choose_event_detector.bind("<<ComboboxSelected>>", self.set_event_detector)
-        choose_event_detector['values'] = [x.name for x in self.controller.get_detectors()]
 
         return choose_problem_domain, choose_microscope, choose_event_detector
 
@@ -156,10 +180,10 @@ class MainScreen:
             widget['foreground'] = 'Grey'
             widget.insert(0, widget_text)
 
-    def focus_in_entry_box(self, widget):
+    def focus_in_entry_box(self, widget, widget_text):
         if widget['foreground'] != 'Black':
             widget['foreground'] = 'Black'
-            if widget.get() == PLACEHOLDER:
+            if widget.get() == widget_text:
                 widget.delete(0, 'end')
 
     def set_user_settings(self):
