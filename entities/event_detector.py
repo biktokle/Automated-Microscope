@@ -12,8 +12,8 @@ class EventDetector:
         :param path: the inserted path of the event detector.
         """
         self.path = path
-        self.detector_path, self.image, self.description = self.get_data()
         self.name = os.path.basename(path)
+        self.detector_path, self.image, self.description = self.get_data()
 
     def get_data(self):
         """
@@ -29,12 +29,12 @@ class EventDetector:
                 continue
             full_path = os.path.join(self.path, name)
             if suffix == '.txt':
-                self.description = open(full_path, "r").read()
+                description = open(full_path, "r").read()
             elif suffix == '.py':
-                self.detector_path = full_path
+                detector_path = full_path
             else:
                 try:
-                    self.image = MicroscopeImage(full_path)
+                    image = MicroscopeImage(full_path)
                 except Exception as e:
                     pass
 
