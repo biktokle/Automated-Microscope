@@ -21,8 +21,7 @@ class EDAdapterDefault(EDAdapter):
     def __init__(self, detector, image_path):
         super().__init__(detector, image_path)
         self.regions = open(global_vars[VARNAMES.roi.value]).read().split('\n')
-        self.client = None
-        self.setup_communication()
+        self.client = self.setup_communication()
 
     def consume_image(self):
         try:
@@ -61,20 +60,29 @@ class EDAdapterDefault(EDAdapter):
                 os.remove(full_path)
             except Exception as e:
                 sleep(0.1)
-        detections = protocol.parse_response(response)
+        detect_response = protocol.parse_response(response)
+
+        detections = detect_response[0]
+        b_boxes = detect_response[1]
 
         region_im = processed_im[ymin:ymax, xmin:xmax]
 
-        for (objectID, vals) in detections.items():
-            # draw both the ID of the object and the centroid of the
-            # object on the output frame
-            text = "{}".format(objectID)
-            cv2.putText(region_im, text, (vals['xcenter'] - 10, vals['ycenter'] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 2)
-            cv2.circle(region_im, (vals['xcenter'], vals['ycenter']), 4, (0, 255, 0), -1)
-            cv2.rectangle(region_im, (vals['xmin'], vals['ymax']), (vals['xmax'], vals['ymin']), (0, 0, 255), 1)
+        if b_boxes is not None:
+            for (objectID, vals) in b_boxes.items():
+                # draw both the ID of the object and the centroid of the
+                # object on the output frame
+                text = "{}".format(objectID)
+                cv2.putText(region_im, text, (vals['xcenter'] - 10, vals['ycenter'] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 2)
+                cv2.circle(region_im, (vals['xcenter'], vals['ycenter']), 4, (0, 255, 0), -1)
+                cv2.rectangle(region_im, (vals['xmin'], vals['ymax']), (vals['xmax'], vals['ymin']), (0, 0, 255), 1)
+
         processed_im[ymin:ymax, xmin:xmax] = region_im
         self.publisher.publish(Events.image_event, processed_im)
+
+        if detections is not None:
+            self.publisher.publish(Events.model_detection_event, detections['coords'])
+
 
     def setup_communication(self):
         """
@@ -82,7 +90,7 @@ class EDAdapterDefault(EDAdapter):
         """
         free_port = client.get_free_port()
         Popen(f'python {self.detector.detector_path} {client.get_free_port()}')
-        self.client = Client(free_port)
+        return Client(free_port)
 
 
 def image_to_8bit_equalized(image):

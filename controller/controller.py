@@ -136,16 +136,14 @@ class Controller:
         for file in os.listdir(self.image_path):
             os.remove(os.path.join(self.image_path, file))
         self.executing = True
-        self.am_adapter = AMAdapterMock(self.user_settings, self.microscopes[(self.problem_domain, self.microscope)])
+        self.am_adapter = AMAdapterMock(self.user_settings)
         self.ed_adapter = EDAdapterDefault(self.chosen_detector, self.image_path)
-        t1 = Thread(target=self.am_adapter.adapter_loop)
-        t2 = Thread(target=self.ed_adapter.adapter_loop)
+        t = Thread(target=self.ed_adapter.adapter_loop)
 
-        self.publisher.subscribe(Events.model_detection_event)(self.forward_model_detection)
+        self.ed_adapter.publisher.subscribe(Events.model_detection_event)(self.forward_model_detection)
         self.ed_adapter.publisher.subscribe(Events.image_event)(self.forward_image)
 
-        t1.start()
-        t2.start()
+        t.start()
 
     def forward_image(self, image):
         """
@@ -159,7 +157,7 @@ class Controller:
         :param coords: the coordinates of the detection of an event that occurred.
         This method publishes a model detection event for the am_adapters's publisher with the coords parameter.
         """
-        self.am_adapter.publisher.publish(Events.model_detection_event, coords)
+        self.am_adapter.activate_microscope(coords)
 
     @check_if_running
     def apply_settings(self, values):
@@ -189,8 +187,6 @@ class Controller:
         This method stop the execution of the adapters.
         """
         if self.executing is True:
-            if self.am_adapter is not None:
-                self.am_adapter.stop()
             if self.ed_adapter is not None:
                 self.ed_adapter.stop()
             self.executing = False
