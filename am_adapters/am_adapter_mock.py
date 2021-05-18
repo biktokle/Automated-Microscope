@@ -4,10 +4,10 @@ import os
 from subprocess import Popen
 
 
-
-
 class AMAdapterMock(AMAdapter):
-
+    """
+    This class is a mock version of the AMAdapter.
+    """
     def __init__(self, user_settings, microscope_manual):
         super().__init__(user_settings, microscope_manual)
 

@@ -10,7 +10,9 @@ from notification.publisher import Events
 
 
 class EDAdapterCellDetection(EDAdapter):
-
+    """
+    This class is a cell detection oriented implementation of the ED Adapter.
+    """
     def __init__(self, detector, image_path):
         super().__init__(detector, image_path)
         self.regions = open(global_vars[VARNAMES.roi.value]).read().split('\n')
@@ -46,7 +48,6 @@ class EDAdapterCellDetection(EDAdapter):
     def process_image(self, im):
         return image_to_8bit_equalized(im)
 
-
     def feed_to_event_detector(self, processed_im, full_path):
         xmin, xmax, ymin, ymax = tuple(map(lambda x: int(x), self.regions[0].split(',')))
         region_im = processed_im[ymin:ymax, xmin:xmax]
@@ -56,6 +57,10 @@ class EDAdapterCellDetection(EDAdapter):
 
 
 def image_to_8bit_equalized(image):
+    """
+    :param image: a microscope image.
+    :return: a preprocessed image after converting it to uint8 type.
+    """
     ratio = np.amax(image) / 256
     img8 = (image / ratio).astype('uint8')
 

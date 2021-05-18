@@ -15,7 +15,9 @@ from notification.publisher import Events
 
 
 class EDAdapterDefault(EDAdapter):
-
+    """
+    This class is a default implementation of the ED Adapter.
+    """
     def __init__(self, detector, image_path):
         super().__init__(detector, image_path)
         self.regions = open(global_vars[VARNAMES.roi.value]).read().split('\n')
@@ -53,7 +55,7 @@ class EDAdapterDefault(EDAdapter):
         region = {'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax}
         request = protocol.create_detection_request(full_path, region)
         self.client.send_request(request)
-        response = self.client.get_repsonse()
+        response = self.client.get_response()
         while os.path.exists(full_path):
             try:
                 os.remove(full_path)
@@ -75,19 +77,19 @@ class EDAdapterDefault(EDAdapter):
         self.publisher.publish(Events.image_event, processed_im)
 
     def setup_communication(self):
+        """
+        This method sets up a communication channel with the event detector program.
+        """
         free_port = client.get_free_port()
-        print(f'{self.detector.detector_path}')
         Popen(f'python {self.detector.detector_path} {client.get_free_port()}')
         self.client = Client(free_port)
 
 
-
-
-
-
-
-
 def image_to_8bit_equalized(image):
+    """
+    :param image: a microscope image.
+    :return: a preprocessed image after converting it to uint8 type.
+    """
     ratio = np.amax(image) / 256
     img8 = (image / ratio).astype('uint8')
 
