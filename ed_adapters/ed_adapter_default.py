@@ -23,6 +23,7 @@ class EDAdapterDefault(EDAdapter):
     """
     def __init__(self, detector, working_dir):
         super().__init__(detector, working_dir)
+        self.image_path = os.path.join(self.working_dir, IMAGES_PATH)
         self.regions = open(os.path.join(self.working_dir, ROI_PATH)).read().split('\n')
         self.client = self.setup_communication()
 
@@ -109,4 +110,3 @@ def image_to_8bit_equalized(image):
     img8 = (image / ratio).astype('uint8')
 
     return img8
-

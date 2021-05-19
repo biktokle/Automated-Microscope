@@ -1,4 +1,3 @@
-
 import os
 import sys
 
@@ -134,11 +133,11 @@ class Controller:
         """
         self.executing = True
         self.am_adapter = AMAdapterAVI(self.user_settings, self.working_dir)
-        self.ed_adapter = EDAdapterDefault(self.chosen_detector, self.am_adapter.image_path, self.am_adapter.roi_path)
+        self.ed_adapter = EDAdapterDefault(self.chosen_detector, self.working_dir)
 
         # delete images from working dir
-        for file in os.listdir(self.am_adapter.image_path):
-            os.remove(os.path.join(self.am_adapter.image_path, file))
+        for file in os.listdir(self.ed_adapter.image_path):
+            os.remove(os.path.join(self.ed_adapter.image_path, file))
 
         t = Thread(target=self.ed_adapter.adapter_loop)
 

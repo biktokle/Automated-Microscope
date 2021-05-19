@@ -5,6 +5,7 @@ import os
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOGGER_DIR = os.path.join(ROOT_DIR, 'logs')
 
+
 def setup_loggers():
     l = logging.getLogger('exceptions')
     fileHandler = logging.FileHandler(os.path.join(LOGGER_DIR, 'errors.log'), mode='w+')
