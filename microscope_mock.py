@@ -1,0 +1,24 @@
+import time
+import os
+import numpy as np
+from skimage import io
+
+
+IMAGES_PATH = r'C:\Users\Ravid\Desktop\1st Degree\4th Year\Final Project\working_dir\images'
+ROOT_PATH = r'C:\Users\Ravid\Desktop\1st Degree\4th Year\Final Project\working_dir'
+
+
+def image_to_8bit_equalized(image):
+    ratio = np.amax(image) / 256
+    img8 = (image / ratio).astype('uint8')
+
+    return img8
+
+
+original_im = os.path.join(ROOT_PATH, 'example.tif')
+im = io.imread(original_im)
+for i, image in enumerate(im):
+    time.sleep(2)
+    frame = np.dstack((np.zeros((len(image[0]), len(image[0][0]))), image[1], image[0]))
+    io.imsave(os.path.join(IMAGES_PATH, f'{i}.tif'), frame)
+
