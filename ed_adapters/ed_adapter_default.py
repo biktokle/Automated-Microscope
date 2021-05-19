@@ -1,4 +1,4 @@
-from subprocess import Popen, PIPE
+from subprocess import Popen
 from time import sleep
 
 import cv2
@@ -7,20 +7,23 @@ from skimage import io
 
 from communication import client, protocol
 from communication.client import Client
-from definitions import global_vars, VARNAMES
 from ed_adapters.ed_adapter_abc import EDAdapter
 import os
 
 from notification.publisher import Events
 
 
+IMAGES_PATH = 'images'
+ROI_PATH = 'regions_of_interest.rgm'
+
+
 class EDAdapterDefault(EDAdapter):
     """
     This class is a default implementation of the ED Adapter.
     """
-    def __init__(self, detector, image_path):
-        super().__init__(detector, image_path)
-        self.regions = open(global_vars[VARNAMES.roi.value]).read().split('\n')
+    def __init__(self, detector, working_dir):
+        super().__init__(detector, working_dir)
+        self.regions = open(os.path.join(self.working_dir, ROI_PATH)).read().split('\n')
         self.client = self.setup_communication()
 
     def consume_image(self):
@@ -30,6 +33,7 @@ class EDAdapterDefault(EDAdapter):
             raise Exception(f'Image directory does not exist: {no_such_dir}')
         except Exception as e:
             raise Exception(f'Image directory was not set up: {e}')
+
         if len(files) > 1:
             raise Exception('More than one image in directory, ambiguous')
         if not files:
@@ -44,6 +48,7 @@ class EDAdapterDefault(EDAdapter):
             except Exception as e:
                 print(e)
                 sleep(0.1)
+
         return image, full_path
 
     def process_image(self, im):
@@ -60,9 +65,10 @@ class EDAdapterDefault(EDAdapter):
                 os.remove(full_path)
             except Exception as e:
                 sleep(0.1)
+
         detect_response = protocol.parse_response(response)
 
-        detections = detect_response[0]
+        detection = detect_response[0]
         b_boxes = detect_response[1]
 
         region_im = processed_im[ymin:ymax, xmin:xmax]
@@ -80,9 +86,10 @@ class EDAdapterDefault(EDAdapter):
         processed_im[ymin:ymax, xmin:xmax] = region_im
         self.publisher.publish(Events.image_event, processed_im)
 
-        if detections is not None:
-            self.publisher.publish(Events.model_detection_event, detections['coords'])
-
+        if detection is not None:
+            self.publisher.publish(Events.model_detection_event, detection['coords'])
+        else:
+            self.publisher.publish(Events.model_detection_event)
 
     def setup_communication(self):
         """

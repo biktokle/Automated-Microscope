@@ -7,7 +7,7 @@ from entities.event_detector import EventDetector
 from entities.microscope_manual import MicroscopeManual
 from entities.user_settings import UserSettings
 from logs.log_setup import setup_loggers
-from am_adapters.am_adapter_mock import AMAdapterMock
+from am_adapters.am_adapter_avi import AMAdapterAVI
 import logging
 from threading import Thread
 
@@ -43,7 +43,7 @@ def check_if_parameters_set(func):
     """
     def wrap(self, *args, **kwargs):
         detector = self.chosen_detector
-        path = self.image_path
+        path = self.working_dir
         user_settings = self.user_settings
         if detector is None or path is None or user_settings is None:
             print("Parameters are not set")
@@ -62,7 +62,7 @@ class Controller:
         self.ed_adapter = None          # the ed_adapter of the system.
         self.problem_domain = None      # the problem domain for the next execution.
         self.microscope = None          # the microscope for the next execution.
-        self.image_path = None          # the directory of the images which will be fetched in the next execution.
+        self.working_dir = None         # the working directory next execution.
         self.user_settings = None       # the settings that the user has fed to the microscope for the next execution.
         self.detectors_path = None      # the path of the event detector that is chosen for the next execution.
         self.detectors = []             # the event detectors that are available
@@ -111,12 +111,12 @@ class Controller:
         self.chosen_detector = self.detectors[index]
 
     @check_if_running
-    def set_image_path(self, path):
+    def set_working_dir(self, path):
         """
-        :param path: a path to images directory.
-        This method sets the path of the images directory for the next execution.
+        :param path: a path to working directory.
+        This method sets the path of the working directory for the next execution.
         """
-        self.image_path = path
+        self.working_dir = path
 
     @check_if_running
     def set_detectors_path(self, path):
@@ -132,14 +132,17 @@ class Controller:
         """
         This method start the execution of the adapters.
         """
-        # delete images from working dir
-        for file in os.listdir(self.image_path):
-            os.remove(os.path.join(self.image_path, file))
         self.executing = True
-        self.am_adapter = AMAdapterMock(self.user_settings)
-        self.ed_adapter = EDAdapterDefault(self.chosen_detector, self.image_path)
+        self.am_adapter = AMAdapterAVI(self.user_settings, self.working_dir)
+        self.ed_adapter = EDAdapterDefault(self.chosen_detector, self.am_adapter.image_path, self.am_adapter.roi_path)
+
+        # delete images from working dir
+        for file in os.listdir(self.am_adapter.image_path):
+            os.remove(os.path.join(self.am_adapter.image_path, file))
+
         t = Thread(target=self.ed_adapter.adapter_loop)
 
+        self.am_adapter.activate_microscope()
         self.ed_adapter.publisher.subscribe(Events.model_detection_event)(self.forward_model_detection)
         self.ed_adapter.publisher.subscribe(Events.image_event)(self.forward_image)
 
@@ -152,12 +155,12 @@ class Controller:
         """
         self.publisher.publish(Events.image_event, image)
 
-    def forward_model_detection(self, coords):
+    def forward_model_detection(self, coords=None):
         """
         :param coords: the coordinates of the detection of an event that occurred.
         This method publishes a model detection event for the am_adapters's publisher with the coords parameter.
         """
-        self.am_adapter.activate_microscope(coords)
+        self.am_adapter.event_handle(coords)
 
     @check_if_running
     def apply_settings(self, values):
@@ -193,4 +196,3 @@ class Controller:
             print('Execution is stopped')
         else:
             print('System is not being executed')
-

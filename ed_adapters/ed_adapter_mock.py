@@ -1,15 +1,14 @@
 from time import sleep
 
-import imageio
 from skimage import io
-import matplotlib.pyplot as plt
 from ed_adapters.ed_adapter_abc import EDAdapter
-from definitions import global_vars, VARNAMES
 import os
-import tifffile as tiff
 from subprocess import Popen
 
 from notification.publisher import Events
+IMAGES_PATH = 'images'
+PROCESS_IMAGES_PATH = 'processed_images'
+COORDINATES_PATH = 'coordinates'
 
 
 class EDAdapterMock(EDAdapter):
@@ -17,8 +16,11 @@ class EDAdapterMock(EDAdapter):
     This class is a mock version of the ED Adapter.
     """
 
-    def __init__(self, ed_path, image_path):
-        super().__init__(ed_path, image_path)
+    def __init__(self, ed_path, working_dir):
+        super().__init__(ed_path, working_dir)
+        self.image_path = os.path.join(self.working_dir, IMAGES_PATH)
+        self.process_images_path = os.path.join(self.working_dir, PROCESS_IMAGES_PATH)
+        self.coordinates_path = os.path.join(self.working_dir, COORDINATES_PATH)
 
     def consume_image(self):
         try:
@@ -48,7 +50,7 @@ class EDAdapterMock(EDAdapter):
 
     def process_image(self, im):
         self.publisher.publish(Events.image_event, im)
-        io.imsave(global_vars[VARNAMES.processed_image_path.value], im)
+        io.imsave(self.process_images_path, im)
 
     def feed_to_event_detector(self, processed_im, full_path):
-        Popen(f'python {self.detector.ed_path} {global_vars[VARNAMES.processed_image_path.value]} {global_vars[VARNAMES.coordinates_file_path.value]}')
+        Popen(f'python {self.detector.ed_path} {self.process_images_path} {self.coordinates_path}')

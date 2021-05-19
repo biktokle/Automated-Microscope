@@ -8,13 +8,13 @@ class EDAdapter(ABC):
     This class is an abstract Event Detector EDAdapater. It holds the responsibility for communicating with the event
     detector.
     """
-    def __init__(self, detector, image_path):
+    def __init__(self, detector, working_dir):
         """
         :param detector: the event detector.
-        :param image_path: the path to the directory of the microscope images.
+        :param working_dir: the path to the working directory.
         """
         self.detector = detector
-        self.image_path = image_path
+        self.working_dir = working_dir
         self.running = True
         self.publisher = Publisher()
 

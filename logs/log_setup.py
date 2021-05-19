@@ -1,6 +1,9 @@
 import logging
 import os
-from definitions import LOGGER_DIR
+
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+LOGGER_DIR = os.path.join(ROOT_DIR, 'logs')
 
 def setup_loggers():
     l = logging.getLogger('exceptions')

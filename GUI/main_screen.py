@@ -97,7 +97,7 @@ class MainScreen:
         self.directory_path_label.delete(0, 'end')
         self.directory_path_label.insert(0, path)
         self.directory_path_label['foreground'] = 'Black'
-        self.controller.set_image_path(path)
+        self.controller.set_working_dir(path)
 
     def browse_files_detectors(self):
         path = filedialog.askdirectory(initialdir="/", title="Select a directory")
