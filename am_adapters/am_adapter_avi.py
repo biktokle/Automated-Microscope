@@ -8,6 +8,7 @@ EVENT_FILE = 'ed_output.json'
 
 class AMAdapterAVI(AMAdapter):
     """
+    This class is responsible for the communication with the AVI microscope.
     """
     def __init__(self, user_settings, working_dir):
         self.user_settings = user_settings
@@ -18,6 +19,7 @@ class AMAdapterAVI(AMAdapter):
     def activate_microscope(self):
         with open(self.user_settings_path, 'w+') as file:
             file.write(json.dumps(self.user_settings.settings_map))
+            file.close()
 
     def parse_regions(self):
         pass
@@ -30,6 +32,6 @@ class AMAdapterAVI(AMAdapter):
                 file.write(json.dumps(detection))
             else:
                 detection['event_detected'] = True
-                detection['event_rect_x'] = [coords['x'][0], coords['x'][1]]
-                detection['event_rect_y'] = [coords['y'][0], coords['y'][1]]
+                detection['event_rect_x'] = [coords['event_rect_x'][0], coords['event_rect_x'][1]]
+                detection['event_rect_y'] = [coords['event_rect_y'][0], coords['event_rect_y'][1]]
                 file.write(json.dumps(detection))

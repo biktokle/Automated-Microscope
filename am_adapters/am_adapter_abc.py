@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class AMAdapter(ABC):
     """
-    This class is an abstract Event Detector AMAdapater. It holds the responsibility for communicating with the
+    This class is an abstract Event Detector AMAdpater. It holds the responsibility for communicating with the
     microscope
     """
 
