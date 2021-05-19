@@ -115,7 +115,7 @@ class Controller:
         :param path: a path to working directory.
         This method sets the path of the working directory for the next execution.
         """
-        self.working_dir = path
+        self.working_dir = r'{}'.format(path)
 
     @check_if_running
     def set_detectors_path(self, path):
@@ -123,7 +123,7 @@ class Controller:
         :param path: a path to detectors directory.
         This method sets the controller's path of the detectors directory.
         """
-        self.detectors_path = path
+        self.detectors_path = r'{}'.format(path)
 
     @check_if_parameters_set
     @check_if_running
@@ -167,7 +167,7 @@ class Controller:
         :param values: the values of the user settings to send to the microscope.
         This method set the user_settings member of the controller to have the values from above.
         """
-        settings = {}
+        settings = dict()
         for key, value in zip(self.microscopes[(self.problem_domain, self.microscope)].settings_keys, values):
             settings[key] = value
         self.user_settings = UserSettings(settings)

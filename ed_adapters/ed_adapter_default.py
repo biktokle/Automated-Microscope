@@ -97,7 +97,7 @@ class EDAdapterDefault(EDAdapter):
         This method sets up a communication channel with the event detector program.
         """
         free_port = client.get_free_port()
-        Popen(f'python {self.detector.detector_path} {client.get_free_port()}')
+        Popen(f'python "{self.detector.detector_path}" {client.get_free_port()}')
         return Client(free_port)
 
 

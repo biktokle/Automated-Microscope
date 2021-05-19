@@ -17,7 +17,7 @@ class AMAdapterAVI(AMAdapter):
 
     def activate_microscope(self):
         with open(self.user_settings_path, 'w+') as file:
-            file.write(json.dumps(self.user_settings))
+            file.write(json.dumps(self.user_settings.settings_map))
 
     def parse_regions(self):
         pass

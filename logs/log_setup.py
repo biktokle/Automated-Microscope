@@ -2,8 +2,7 @@ import logging
 import os
 
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-LOGGER_DIR = os.path.join(ROOT_DIR, 'logs')
+LOGGER_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def setup_loggers():
