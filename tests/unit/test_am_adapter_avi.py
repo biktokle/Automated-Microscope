@@ -57,7 +57,6 @@ class TestAMAdapterAVI(TestCase):
     def tearDown(self):
         try:
             os.remove(os.path.join(self.working_dir, CONFIG_FILE))
-
         except Exception as e0:
             try:
                 os.remove(os.path.join(self.working_dir, EVENT_FILE))
