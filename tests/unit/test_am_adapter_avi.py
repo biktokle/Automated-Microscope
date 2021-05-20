@@ -1,4 +1,5 @@
 import json
+import unittest
 from unittest import TestCase
 from am_adapters.am_adapter_avi import AMAdapterAVI, CONFIG_FILE, EVENT_FILE
 import os
@@ -57,9 +58,13 @@ class TestAMAdapterAVI(TestCase):
     def tearDown(self):
         try:
             os.remove(os.path.join(self.working_dir, CONFIG_FILE))
-
         except Exception as e0:
-            try:
-                os.remove(os.path.join(self.working_dir, EVENT_FILE))
-            except Exception as e1:
-                pass
+            pass
+        try:
+            os.remove(os.path.join(self.working_dir, EVENT_FILE))
+        except Exception as e1:
+            pass
+
+
+if __name__ == '__main__':
+    unittest.main()

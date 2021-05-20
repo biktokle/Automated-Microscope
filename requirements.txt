@@ -8,3 +8,4 @@ tifffile~=2021.2.26
 git+https://github.com/ravidlevy99/EDClientServer.git
 
 pyfakefs~=4.4.0
+undecorated~=0.3.0
