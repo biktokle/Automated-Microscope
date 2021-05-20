@@ -29,10 +29,13 @@ class EDAdapterDefault(EDAdapter):
     def initialize_adapter(self):
         self.regions = open(os.path.join(self.working_dir, ROI_PATH)).read().split('\n')
 
+    def get_image_path(self):
+        return os.path.join(self.working_dir, IMAGES_PATH)
+
     def consume_image(self):
 
         try:
-            image_path = os.path.join(self.working_dir, IMAGES_PATH)
+            image_path = self.get_image_path()
             files = os.listdir(image_path)
         except FileNotFoundError as no_such_dir:
             raise FileNotFoundException(no_such_dir)

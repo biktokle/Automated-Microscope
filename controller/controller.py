@@ -136,8 +136,8 @@ class Controller:
         self.ed_adapter = EDAdapterDefault(self.chosen_detector, self.working_dir)
 
         # delete images from working dir
-        for file in os.listdir(self.ed_adapter.image_path):
-            os.remove(os.path.join(self.ed_adapter.image_path, file))
+        for file in os.listdir(self.ed_adapter.get_image_path()):
+            os.remove(os.path.join(self.ed_adapter.get_image_path(), file))
 
         t = Thread(target=self.ed_adapter.adapter_loop)
 
