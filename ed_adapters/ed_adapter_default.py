@@ -27,7 +27,8 @@ class EDAdapterDefault(EDAdapter):
         self.client = None
 
     def initialize_adapter(self):
-        self.regions = open(os.path.join(self.working_dir, ROI_PATH)).read().split('\n')
+        with open(os.path.join(self.working_dir, ROI_PATH)) as f:
+            self.regions = f.read().split('\n')
 
     def get_image_path(self):
         return os.path.join(self.working_dir, IMAGES_PATH)
@@ -95,7 +96,7 @@ class EDAdapterDefault(EDAdapter):
         self.publisher.publish(Events.image_event, processed_im)
 
         if detection is not None:
-            self.publisher.publish(Events.model_detection_event, detection['coords'])
+            self.publisher.publish(Events.model_detection_event, detection)
         else:
             self.publisher.publish(Events.model_detection_event)
 
