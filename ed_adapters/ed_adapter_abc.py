@@ -42,11 +42,21 @@ class EDAdapter(ABC):
         """
         pass
 
+    @abstractmethod
+    def setup_communication(self):
+        pass
+
+    @abstractmethod
+    def initialize_adapter(self):
+        pass
+
     def adapter_loop(self):
         """
         This method starts the activation of the adapter.
         """
         print('starting ed')
+        self.initialize_adapter()
+        self.setup_communication()
         while self.running:
             im, full_path = self.consume_image()
             if im is not None:

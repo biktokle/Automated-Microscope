@@ -39,12 +39,3 @@ class EventDetector:
                     pass
 
         return detector_path, image, description
-
-    def show_image(self):
-        """
-        This method shows the sample image of the event detector.
-        """
-        try:
-            self.image.show()
-        except Exception as e:
-            pass

@@ -11,7 +11,7 @@ from ed_adapters.ed_adapter_abc import EDAdapter
 import os
 
 from notification.publisher import Events
-
+from exceptions.exceptions import *
 
 IMAGES_PATH = 'images'
 ROI_PATH = 'regions_of_interest.rgm'
@@ -23,24 +23,31 @@ class EDAdapterDefault(EDAdapter):
     """
     def __init__(self, detector, working_dir):
         super().__init__(detector, working_dir)
-        self.image_path = os.path.join(self.working_dir, IMAGES_PATH)
+        self.regions = None
+        self.client = None
+
+    def initialize_adapter(self):
         self.regions = open(os.path.join(self.working_dir, ROI_PATH)).read().split('\n')
-        self.client = self.setup_communication()
+
+    def get_image_path(self):
+        return os.path.join(self.working_dir, IMAGES_PATH)
 
     def consume_image(self):
+
         try:
-            files = os.listdir(self.image_path)
+            image_path = self.get_image_path()
+            files = os.listdir(image_path)
         except FileNotFoundError as no_such_dir:
-            raise Exception(f'Image directory does not exist: {no_such_dir}')
+            raise FileNotFoundException(no_such_dir)
         except Exception as e:
-            raise Exception(f'Image directory was not set up: {e}')
+            raise DirectoryNotSetUpException(e)
 
         if len(files) > 1:
-            raise Exception('More than one image in directory, ambiguous')
+            raise AmbiguousFilesException()
         if not files:
             return None, None
 
-        full_path = os.path.join(self.image_path, files[0])
+        full_path = os.path.join(image_path, files[0])
         sleep(0.1)
         image = None
         while image is None:
@@ -98,7 +105,7 @@ class EDAdapterDefault(EDAdapter):
         """
         free_port = client.get_free_port()
         Popen(f'python "{self.detector.detector_path}" {client.get_free_port()}')
-        return Client(free_port)
+        self.client = Client(free_port)
 
 
 def image_to_8bit_equalized(image):
