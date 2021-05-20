@@ -75,13 +75,8 @@ class Controller:
     @check_if_running
     def get_detectors(self):
         """
-        :return: This method adds to the detectors list the detectors which are in the directory with the path
-        detectors_path.
+        :return: This method returns the event detectors in the detectors directory.
         """
-        if not self.detectors:
-            for name in os.listdir(self.detectors_path):
-                if os.path.isdir(os.path.join(self.detectors_path, name)):
-                    self.detectors.append(EventDetector(os.path.join(self.detectors_path, name)))
         return self.detectors
 
     @check_if_running
@@ -121,9 +116,14 @@ class Controller:
     def set_detectors_path(self, path):
         """
         :param path: a path to detectors directory.
-        This method sets the controller's path of the detectors directory.
+        This method sets the controller's path of the detectors directory, and adds to the detectors list the detectors
+        which are in the directory with the path.
         """
         self.detectors_path = r'{}'.format(path)
+        self.detectors = []
+        for name in os.listdir(self.detectors_path):
+            if os.path.isdir(os.path.join(self.detectors_path, name)):
+                self.detectors.append(EventDetector(os.path.join(self.detectors_path, name)))
 
     @check_if_parameters_set
     @check_if_running

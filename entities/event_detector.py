@@ -29,7 +29,9 @@ class EventDetector:
                 continue
             full_path = os.path.join(self.path, name)
             if suffix == '.txt':
-                description = open(full_path, "r").read()
+                description_file = open(full_path, "r")
+                description = description_file.read()
+                description_file.close()
             elif suffix == '.py':
                 detector_path = full_path
             else:

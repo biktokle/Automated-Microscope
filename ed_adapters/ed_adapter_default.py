@@ -24,7 +24,8 @@ class EDAdapterDefault(EDAdapter):
     def __init__(self, detector, working_dir):
         super().__init__(detector, working_dir)
         self.image_path = os.path.join(self.working_dir, IMAGES_PATH)
-        self.regions = open(os.path.join(self.working_dir, ROI_PATH)).read().split('\n')
+        with open(os.path.join(self.working_dir, ROI_PATH)) as file:
+            self.regions = file.read().split('\n')
         self.client = self.setup_communication()
 
     def consume_image(self):
