@@ -32,6 +32,6 @@ class AMAdapterAVI(AMAdapter):
                 file.write(json.dumps(detection))
             else:
                 detection['event_detected'] = True
-                detection['event_rect_x'] = [coords['event_rect_x'][0], coords['event_rect_x'][1]]
-                detection['event_rect_y'] = [coords['event_rect_y'][0], coords['event_rect_y'][1]]
+                detection['event_rect_x'] = [coords['xmin'], coords['xmax']]
+                detection['event_rect_y'] = [coords['ymin'], coords['ymax']]
                 file.write(json.dumps(detection))

@@ -29,9 +29,8 @@ class EventDetector:
                 continue
             full_path = os.path.join(self.path, name)
             if suffix == '.txt':
-                description_file = open(full_path, "r")
-                description = description_file.read()
-                description_file.close()
+                with open(full_path, "r") as f:
+                    description = f.read()
             elif suffix == '.py':
                 detector_path = full_path
             else:
@@ -41,12 +40,3 @@ class EventDetector:
                     pass
 
         return detector_path, image, description
-
-    def show_image(self):
-        """
-        This method shows the sample image of the event detector.
-        """
-        try:
-            self.image.show()
-        except Exception as e:
-            pass
