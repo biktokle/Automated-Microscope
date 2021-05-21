@@ -2,7 +2,7 @@ import unittest
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from controller.controller import Controller, AVI_SETTINGS
+from controller.controller import Controller
 import os
 from pathlib import Path
 from entities.event_detector import EventDetector

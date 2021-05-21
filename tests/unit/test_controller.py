@@ -4,7 +4,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 from pathlib import Path
 
-from controller.controller import Controller, AVI_SETTINGS
+from controller.controller import Controller
 from entities.microscope_manual import MicroscopeManual
 from notification.publisher import Events
 
