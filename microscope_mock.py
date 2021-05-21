@@ -4,8 +4,8 @@ import numpy as np
 from skimage import io
 
 
-IMAGES_PATH = r'C:\Users\Ravid\Desktop\1st Degree\4th Year\Final Project\working_dir\images'
-ROOT_PATH = r'C:\Users\Ravid\Desktop\1st Degree\4th Year\Final Project\working_dir'
+IMAGES_PATH = r'C:\Users\viktor_koukouliev\Desktop\WORKDIR\images'
+ROOT_PATH = r'C:\Users\viktor_koukouliev\Desktop\WORKDIR'
 
 
 def image_to_8bit_equalized(image):
