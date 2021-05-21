@@ -132,8 +132,7 @@ class Controller:
         This method start the execution of the adapters.
         """
         self.executing = True
-        self.am_adapter = AMAdapterAVI(self.user_settings, self.working_dir)
-        self.ed_adapter = EDAdapterDefault(self.chosen_detector, self.working_dir)
+        self.am_adapter, self.ed_adapter = self.create_adapters()
 
         # delete images from working dir
         for file in os.listdir(self.ed_adapter.get_image_path()):
@@ -195,3 +194,7 @@ class Controller:
             print('Execution is stopped')
         else:
             print('System is not being executed')
+
+    def create_adapters(self):
+        return AMAdapterAVI(self.user_settings, self.working_dir),\
+               EDAdapterDefault(self.chosen_detector, self.working_dir)
