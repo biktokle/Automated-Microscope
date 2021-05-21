@@ -15,8 +15,10 @@ class TestAMAdapterAVI(TestCase):
         self.settings_map['test_key3'] = 'test_value3'
 
         self.coords = dict()
-        self.coords['event_rect_x'] = [100, 200]
-        self.coords['event_rect_y'] = [300, 400]
+        self.coords['xmin'] = 100
+        self.coords['xmax'] = 200
+        self.coords['ymin'] = 300
+        self.coords['ymax'] = 400
         self.coords['event_detected'] = True
 
         self.working_dir = os.path.dirname(os.path.realpath(__file__))
@@ -52,8 +54,14 @@ class TestAMAdapterAVI(TestCase):
 
         with open(file_path) as file:
             data = json.load(file)
+            coords = dict()
+            coords['xmin'] = data['event_rect_x'][0]
+            coords['xmax'] = data['event_rect_x'][1]
+            coords['ymin'] = data['event_rect_y'][0]
+            coords['ymax'] = data['event_rect_y'][1]
+            coords['event_detected'] = data['event_detected']
 
-            assert data == self.coords
+            assert coords == self.coords
 
     def tearDown(self):
         try:

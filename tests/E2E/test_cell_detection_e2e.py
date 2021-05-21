@@ -1,4 +1,5 @@
 import json
+import unittest
 from time import sleep
 from unittest import TestCase
 
@@ -10,8 +11,8 @@ import shutil
 from entities.user_settings import UserSettings
 
 dirpath = os.path.dirname(__file__)
-DETECTOR_PATH = os.path.join(dirpath, 'mock_detectors')
-WORK_DIR = os.path.join(dirpath, 'tests_workdir')
+DETECTOR_PATH = os.path.join(dirpath, '../test_resources/mock_detectors')
+WORK_DIR = os.path.join(dirpath, '../test_resources/tests_workdir')
 
 ED_OUTPUT = 'ed_output.json'
 CONFIG = 'config.json'
@@ -56,9 +57,5 @@ class E2ETests(TestCase):
         os.remove(os.path.join(WORK_DIR, ED_OUTPUT))
 
 
-
-
-
-
-
-
+if __name__ == '__main__':
+    unittest.main()
