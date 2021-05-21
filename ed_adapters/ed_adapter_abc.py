@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+from subprocess import Popen
 
+from communication import protocol, client
 from notification.publisher import Publisher
 
 
@@ -17,6 +19,8 @@ class EDAdapter(ABC):
         self.working_dir = working_dir
         self.running = True
         self.publisher = Publisher()
+        self.client = None
+        self.server = None
 
     @abstractmethod
     def consume_image(self):
@@ -42,9 +46,18 @@ class EDAdapter(ABC):
         """
         pass
 
-    @abstractmethod
     def setup_communication(self):
-        pass
+        """
+        This method sets up a communication channel with the event detector program.
+        """
+        free_port = client.get_free_port()
+        process = Popen(f'python "{self.detector.detector_path}" {client.get_free_port()}')
+        self.client = client.Client(free_port)
+        return process
+
+    def stop_communication(self):
+        self.client.send_request(protocol.create_terminate_request())
+        self.server.wait()
 
     @abstractmethod
     def initialize_adapter(self):
@@ -56,7 +69,7 @@ class EDAdapter(ABC):
         """
         print('starting ed')
         self.initialize_adapter()
-        self.setup_communication()
+        self.server = self.setup_communication()
         while self.running:
             im, full_path = self.consume_image()
             if im is not None:
@@ -67,5 +80,6 @@ class EDAdapter(ABC):
         """
         This method stops the activation of the adapter.
         """
+        self.stop_communication()
         self.running = False
 

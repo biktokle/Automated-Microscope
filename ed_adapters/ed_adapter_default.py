@@ -24,7 +24,6 @@ class EDAdapterDefault(EDAdapter):
     def __init__(self, detector, working_dir):
         super().__init__(detector, working_dir)
         self.regions = None
-        self.client = None
 
     def initialize_adapter(self):
         with open(os.path.join(self.working_dir, ROI_PATH)) as f:
@@ -100,13 +99,7 @@ class EDAdapterDefault(EDAdapter):
         else:
             self.publisher.publish(Events.model_detection_event)
 
-    def setup_communication(self):
-        """
-        This method sets up a communication channel with the event detector program.
-        """
-        free_port = client.get_free_port()
-        Popen(f'python "{self.detector.detector_path}" {client.get_free_port()}')
-        self.client = Client(free_port)
+
 
 
 def image_to_8bit_equalized(image):
