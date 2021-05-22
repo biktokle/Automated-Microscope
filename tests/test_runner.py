@@ -1,4 +1,4 @@
-from tests.E2E import test_cell_detection_e2e
+from tests.e2e import test_cell_detection_e2e
 from tests.integration import test_controller_integration
 import unittest
 
