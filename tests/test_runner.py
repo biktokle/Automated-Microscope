@@ -1,5 +1,5 @@
-from e2e import test_cell_detection_e2e
-from integration import test_controller_integration
+from tests.E2E import test_cell_detection_e2e
+from tests.integration import test_controller_integration
 import unittest
 
 from tests.unit import test_ed_adapter_default, test_am_adapter_avi, test_controller
