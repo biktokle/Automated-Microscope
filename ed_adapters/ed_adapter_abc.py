@@ -56,7 +56,7 @@ class EDAdapter(ABC):
         return process
 
     def stop_communication(self):
-        self.client.send_request(protocol.create_terminate_request())
+        self.client.stop_communication()
         self.server.wait()
 
     @abstractmethod

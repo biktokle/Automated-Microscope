@@ -1,12 +1,10 @@
-from subprocess import Popen
 from time import sleep
 
 import cv2
 import numpy as np
 from skimage import io
 
-from communication import client, protocol
-from communication.client import Client
+from communication import protocol
 from ed_adapters.ed_adapter_abc import EDAdapter
 import os
 

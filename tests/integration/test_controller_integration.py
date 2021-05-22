@@ -26,8 +26,7 @@ class TestController(TestCase):
         adapter_mock.get_image_path = MagicMock(return_value=os.path.join(WORK_DIR, IMAGES_PATH))
         self.controller.create_adapters = MagicMock(return_value=(adapter_mock, adapter_mock))
 
-        self.detectors_path = os.path.join(Path(__file__).parent.parent.parent.parent, 'event_detectors')
-        self.controller.set_detectors_path(self.detectors_path)
+        self.controller.set_detectors_path(DETECTOR_PATH)
 
         self.controller.problem_domains.append(MOCK_PROBLEM)
         self.controller.domain_microscopes[MOCK_PROBLEM] = ['Mock_Microscope1', 'Mock_Microscope2']
@@ -35,7 +34,7 @@ class TestController(TestCase):
         self.controller.microscopes[('Mock_Problem', 'Mock_Microscope2')] = MicroscopeManual(MOCK_SETTINGS)
 
     def test_get_detectors(self):
-        detectors = os.listdir(self.detectors_path)
+        detectors = os.listdir(DETECTOR_PATH)
 
         controller_detectors = [detector.name for detector in self.controller.get_detectors()]
         cond1 = controller_detectors == detectors
@@ -118,7 +117,7 @@ class TestController(TestCase):
 
     def test_set_detectors_path(self):
         controller_detectors = [detector.name for detector in self.controller.detectors]
-        detectors = os.listdir(self.detectors_path)
+        detectors = os.listdir(DETECTOR_PATH)
         cond1 = controller_detectors == detectors
 
         execute(self.controller)
@@ -127,7 +126,7 @@ class TestController(TestCase):
 
         self.controller.stop()
         self.controller.set_detectors_path(WORK_DIR)
-        detectors = os.listdir(self.detectors_path)
+        detectors = os.listdir(DETECTOR_PATH)
         controller_detectors = [detector.name for detector in self.controller.detectors]
         cond3 = detectors != controller_detectors
 

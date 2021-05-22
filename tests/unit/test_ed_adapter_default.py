@@ -1,3 +1,5 @@
+import unittest
+
 from pyfakefs.fake_filesystem_unittest import TestCase
 from ed_adapters.ed_adapter_default import EDAdapterDefault, IMAGES_PATH
 from unittest.mock import Mock, patch
@@ -34,6 +36,10 @@ class TestEDAdapterDefault(TestCase):
         image, path = self.ed_adapter.consume_image()
         assert path == os.path.join(self.working_dir, IMAGES_PATH, 'image1.tif')
         assert image == np.zeros((1, 1, 1, 1))
+
+
+if __name__ == '__main__':
+    unittest.main()
 
 
 
