@@ -1,10 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
 
-BUTTON_WIDTH = 10
-SPACEX = 20
-SPACEY = 20
-TEXT_FONT_SIZE = 10
 FONT_SIZE = 15
 USER_SETTINGS_DIMENSIONS = '700x500+350+150'
 USER_SETTINGS_TITLE = 'User Settings Setup'
@@ -24,7 +20,6 @@ class UserSettingsScreen:
 
         self.apply_button = self.create_buttons()
         self.actions_menu = self.build_settings_menu()
-        self.menu.pack()
 
     def create_window(self, title, dimensions):
         root = Tk()
@@ -43,9 +38,8 @@ class UserSettingsScreen:
         return menu, root
 
     def create_buttons(self):
-        apply_button = Button(self.menu, text="Apply", command=self.apply_settings)
-        apply_button.config(width=BUTTON_WIDTH)
-        apply_button.pack(padx=SPACEX, pady=SPACEY)
+        apply_button = Button(self.root, text="Apply", command=self.apply_settings)
+        apply_button.place(relx=0.4, rely=0.25, relwidth=0.2, relheight=0.1, anchor='nw')
         return apply_button
 
     def build_settings_menu(self):
@@ -61,7 +55,7 @@ class UserSettingsScreen:
             self.entries = self.entries + [setting_entry]
             r = r + 1
 
-        settings_menu.place(relx=0.5, rely=0.5, anchor='center')
+        settings_menu.place(relx=0.5, rely=0.6, anchor='center')
         return settings_menu
 
     def apply_settings(self):

@@ -72,12 +72,12 @@ class MainScreen:
 
     def create_execute_button(self):
         execute_button = Button(self.menu, text="Execute", command=self.controller.run)
-        execute_button.place(relx=0.15, rely=0.05, relwidth=0.7, anchor='nw')
+        execute_button.place(relx=0.15, rely=0.05, relwidth=0.5, anchor='nw')
         return execute_button
 
     def create_stop_button(self):
         stop_button = Button(self.menu, text="Stop", command=self.controller.stop)
-        stop_button.place(relx=0.15, rely=0.15, relwidth=0.7, anchor='nw')
+        stop_button.place(relx=0.15, rely=0.15, relwidth=0.5, anchor='nw')
         return stop_button
 
     def browse_files(self):
@@ -125,7 +125,7 @@ class MainScreen:
         choose_problem_domain = Combobox(self.menu, state="readonly", font=('Times', FONT_SIZE))
         choose_problem_domain.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
         choose_problem_domain.set("Choose Problem Domain")
-        choose_problem_domain.place(relx=0.1, rely=0.45, relwidth=0.7, relheight=0.05, anchor='nw')
+        choose_problem_domain.place(relx=0.1, rely=0.45, relwidth=0.6, relheight=0.05, anchor='nw')
         choose_problem_domain.bind("<<ComboboxSelected>>", self.set_problem_domain)
         choose_problem_domain['values'] = self.controller.problem_domains
 
@@ -133,22 +133,24 @@ class MainScreen:
         choose_microscope.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
         choose_microscope.set("Choose Microscope")
         choose_microscope.bind("<<ComboboxSelected>>", self.set_microscope)
-        choose_microscope.place(relx=0.1, rely=0.55, relwidth=0.7, relheight=0.05, anchor='nw')
+        choose_microscope.place(relx=0.1, rely=0.55, relwidth=0.6, relheight=0.05, anchor='nw')
 
         choose_event_detector = Combobox(self.menu, state="readonly", font=('Times', FONT_SIZE))
         choose_event_detector.option_add('*TCombobox*Listbox.font', ('Times', FONT_SIZE))
         choose_event_detector.set("Choose Event Detector")
-        choose_event_detector.place(relx=0.1, rely=0.65, relwidth=0.7, relheight=0.05, anchor='nw')
+        choose_event_detector.place(relx=0.1, rely=0.65, relwidth=0.6, relheight=0.05, anchor='nw')
         choose_event_detector.bind("<<ComboboxSelected>>", self.set_event_detector)
 
         return choose_problem_domain, choose_microscope, choose_event_detector
 
     def create_description(self):
-        event_detector = Label(self.menu, text='Event Detector Description:\n', font=('Times', DESCRIPTION_SIZE))
-        event_detector.place(relx=0.05, rely=0.9, relwidth=0.4, anchor='w')
+        event_detector = Label(self.root, text='Event Detector Description:\n', font=('Times', DESCRIPTION_SIZE),
+                               wraplength=200)
+        event_detector.place(relx=0.05, rely=0.9, relwidth=0.15, relheight=0.15, anchor='w')
 
-        user_settings = Label(self.menu, text='User Settings:\n', font=('Times', DESCRIPTION_SIZE))
-        user_settings.place(relx=0.55, rely=0.9, relwidth=0.4, anchor='w')
+        user_settings = Label(self.root, text='User Settings:\n', font=('Times', DESCRIPTION_SIZE),
+                              wraplength=200)
+        user_settings.place(relx=0.3, rely=0.9, relwidth=0.15, relheight=0.15, anchor='w')
         return event_detector, user_settings
 
     def create_image_canvas(self):
@@ -179,7 +181,7 @@ class MainScreen:
 
     def create_user_settings(self, menu):
         user_settings = Button(menu, text="User Settings", command=self.open_user_settings)
-        user_settings.place(relx=0.1, rely=0.75, relwidth=0.6, relheight=0.05, anchor='nw')
+        user_settings.place(relx=0.15, rely=0.75, relwidth=0.5, relheight=0.05, anchor='nw')
         return user_settings
 
     def set_problem_domain(self, event):
