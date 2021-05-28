@@ -22,7 +22,8 @@ class UserSettingsScreen:
         self.actions_menu = self.build_settings_menu()
 
     def create_window(self, title, dimensions):
-        root = Tk()
+        root = Toplevel()
+        root.grab_set()
         root.title(title)
         root.geometry(dimensions)
         label = Label(root, text=title, font=('Times', TITLE_FONT_SIZE))

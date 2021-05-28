@@ -165,4 +165,6 @@ def execute(controller):
     controller.chosen_detector = EventDetector(os.path.join(DETECTOR_PATH, 'mock_detector'))
     controller.working_dir = WORK_DIR
     controller.user_settings = UserSettings({'test': 'test'})
+    controller.problem_domain = MOCK_PROBLEM
+    controller.microscope = controller.domain_microscopes[MOCK_PROBLEM][0]
     controller.run()

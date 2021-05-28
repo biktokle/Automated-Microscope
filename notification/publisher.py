@@ -23,6 +23,6 @@ class Publisher(object):
 
 
 class Events(Enum):
-    executing_event = 'executing'
+    popup_event = 'popup'
     image_event = 'image'
     model_detection_event = 'model_detection'

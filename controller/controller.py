@@ -28,7 +28,7 @@ def check_if_running(func):
     """
     def wrap(self, *args, **kwargs):
         if self.executing:
-            self.publisher.publish(Events.executing_event, 'Program already running')
+            self.publisher.publish(Events.popup_event, 'Program already running')
         else:
             return func(self, *args, **kwargs)
     return wrap
@@ -41,11 +41,8 @@ def check_if_parameters_set(func):
     set.
     """
     def wrap(self, *args, **kwargs):
-        detector = self.chosen_detector
-        path = self.working_dir
-        user_settings = self.user_settings
-        if detector is None or path is None or user_settings is None:
-            print("Parameters are not set")
+        if None in [self.chosen_detector, self.working_dir, self.user_settings, self.problem_domain, self.microscope]:
+            self.publisher.publish(Events.popup_event, 'Parameters are not set')
         else:
             return func(self, *args, **kwargs)
     return wrap
@@ -183,7 +180,7 @@ class Controller:
         """
         return self.user_settings.settings_map
 
-    def stop(self):
+    def stop(self, to_exit=False):
         """
         This method stop the execution of the adapters.
         """
@@ -191,9 +188,11 @@ class Controller:
             if self.ed_adapter is not None:
                 self.ed_adapter.stop()
             self.executing = False
-            print('Execution is stopped')
+            if not to_exit:
+                self.publisher.publish(Events.popup_event, "Execution is stopped")
         else:
-            print('System is not being executed')
+            if not to_exit:
+                self.publisher.publish(Events.popup_event, "The system is not running")
 
     def create_adapters(self):
         return AMAdapterAVI(self.user_settings, self.working_dir),\

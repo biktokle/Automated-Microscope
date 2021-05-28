@@ -46,14 +46,16 @@ class EDAdapterDefault(EDAdapter):
             return None, None
 
         full_path = os.path.join(image_path, files[0])
-        sleep(0.1)
+        # Sleep because sometimes reading fails
+        sleep(0.01)
         image = None
+
         while image is None:
             try:
                 image = io.imread(full_path)
             except Exception as e:
                 print(e)
-                sleep(0.1)
+                sleep(0.01)
 
         return image, full_path
 
@@ -70,7 +72,7 @@ class EDAdapterDefault(EDAdapter):
             try:
                 os.remove(full_path)
             except Exception as e:
-                sleep(0.1)
+                pass
 
         detect_response = protocol.parse_response(response)
 
@@ -88,14 +90,13 @@ class EDAdapterDefault(EDAdapter):
                             cv2.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 2)
                 cv2.circle(region_im, (vals['xcenter'], vals['ycenter']), 4, (0, 255, 0), -1)
                 cv2.rectangle(region_im, (vals['xmin'], vals['ymax']), (vals['xmax'], vals['ymin']), (0, 0, 255), 1)
+        if detection is not None:
+            cv2.rectangle(region_im, (detection['xmin'], detection['ymax']), (detection['xmax'], detection['ymin']), (255, 0, 0), 1)
 
         processed_im[ymin:ymax, xmin:xmax] = region_im
         self.publisher.publish(Events.image_event, processed_im)
+        self.publisher.publish(Events.model_detection_event, detection)
 
-        if detection is not None:
-            self.publisher.publish(Events.model_detection_event, detection)
-        else:
-            self.publisher.publish(Events.model_detection_event)
 
 
 

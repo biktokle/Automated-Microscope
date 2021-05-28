@@ -41,7 +41,7 @@ class TestController(TestCase):
     def test_check_if_running(self):
         self.controller.executing = True
         method = MagicMock()
-        self.controller.publisher.subscribe(Events.executing_event)(method)
+        self.controller.publisher.subscribe(Events.popup_event)(method)
         self.controller.get_detectors()
         assert method.called
 

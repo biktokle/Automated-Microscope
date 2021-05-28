@@ -13,6 +13,7 @@ from entities.user_settings import UserSettings
 dirpath = os.path.dirname(__file__)
 DETECTOR_PATH = os.path.join(dirpath, '../test_resources/mock_detectors')
 WORK_DIR = os.path.join(dirpath, '../test_resources/tests_workdir')
+IMAGE_DIR = os.path.join(dirpath, '../test_resources/test_images')
 
 ED_OUTPUT = 'ed_output.json'
 CONFIG = 'config.json'
@@ -26,15 +27,19 @@ class E2ETests(TestCase):
         self.controller.user_settings = UserSettings({'test': 'test'})
 
     def test_e2e(self):
+        """
+        This test creates 4 images and uses a mock detector to test the flow of the system.
+        3 times there is no event, in the 4th time there is a detected event.
+        """
         self.controller.run()
         with open(os.path.join(WORK_DIR, CONFIG)) as f:
             assert json.loads(f.read())['test'] == 'test'
         os.remove(os.path.join(WORK_DIR, CONFIG))
         for i in range(3):
-            shutil.copyfile(os.path.join(dirpath, 'test_images', '0.tif'), os.path.join(WORK_DIR, 'images', '0.tif'))
+            shutil.copyfile(os.path.join(IMAGE_DIR, '0.tif'), os.path.join(WORK_DIR, 'images', '0.tif'))
             self.__assert_no_event()
 
-        shutil.copyfile(os.path.join(dirpath, 'test_images', '0.tif'), os.path.join(WORK_DIR, 'images', '0.tif'))
+        shutil.copyfile(os.path.join(IMAGE_DIR, '0.tif'), os.path.join(WORK_DIR, 'images', '0.tif'))
         self.__assert_event()
         self.controller.stop()
 

@@ -56,8 +56,10 @@ class EDAdapter(ABC):
         return process
 
     def stop_communication(self):
-        self.client.stop_communication()
-        self.server.wait()
+        if self.client is not None:
+            self.client.stop_communication()
+        if self.server is not None:
+            self.server.wait()
 
     @abstractmethod
     def initialize_adapter(self):

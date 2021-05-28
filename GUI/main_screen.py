@@ -43,11 +43,11 @@ class MainScreen:
         self.ed_description, self.us_description = self.create_description()
 
         # Register Events
-        self.controller.publisher.subscribe(Events.executing_event)(self._on_executing_error)
+        self.controller.publisher.subscribe(Events.popup_event)(self._on_error)
         self.controller.publisher.subscribe(Events.image_event)(self._on_new_image)
 
     def exit(self):
-        self.controller.stop()
+        self.controller.stop(to_exit=True)
         exit(1)
 
     def create_window(self, title, dimensions):
@@ -177,7 +177,7 @@ class MainScreen:
         if self.choose_microscope.get() != "Choose Microscope":
             UserSettingsScreen(self.controller, self.set_user_settings).run()
         else:
-            print("Please choose a microscope")
+            self._on_error("Please choose a microscope")
 
     def create_user_settings(self, menu):
         user_settings = Button(menu, text="User Settings", command=self.open_user_settings)
@@ -201,7 +201,7 @@ class MainScreen:
     def run(self):
         self.root.mainloop()
 
-    def _on_executing_error(self, error_message):
+    def _on_error(self, error_message):
         messagebox.showerror('Error', error_message)
 
     def _on_new_image(self, image):
