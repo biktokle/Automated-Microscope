@@ -4,6 +4,7 @@ from tkinter import messagebox
 
 from PIL import Image, ImageTk
 
+from GUI.progress_bar_screen import ProgressBarScreen
 from GUI.user_settings_screen import UserSettingsScreen
 from controller.controller import Controller
 from tkinter import filedialog
@@ -70,8 +71,13 @@ class MainScreen:
         menu.place(relx=0.1, rely=0.15, relwidth=0.3, relheight=0.8, anchor='nw')
         return menu, root
 
+    def run_controller(self):
+        self.controller.run()
+        if self.controller.executing:
+            self.open_progress_bar()
+
     def create_execute_button(self):
-        execute_button = Button(self.menu, text="Execute", command=self.controller.run)
+        execute_button = Button(self.menu, text="Execute", command=self.run_controller)
         execute_button.place(relx=0.15, rely=0.05, relwidth=0.5, anchor='nw')
         return execute_button
 
@@ -183,6 +189,9 @@ class MainScreen:
         user_settings = Button(menu, text="User Settings", command=self.open_user_settings)
         user_settings.place(relx=0.15, rely=0.75, relwidth=0.5, relheight=0.05, anchor='nw')
         return user_settings
+
+    def open_progress_bar(self):
+        ProgressBarScreen().run()
 
     def set_problem_domain(self, event):
         choice = event.widget.current()
