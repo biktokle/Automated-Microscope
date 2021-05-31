@@ -1,3 +1,4 @@
+from time import sleep
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
@@ -42,14 +43,28 @@ class MainScreen:
         self.create_user_settings = self.create_user_settings(self.menu)
         self.image_canvas = self.create_image_canvas()
         self.ed_description, self.us_description = self.create_description()
+        self.progress_bar = None
 
         # Register Events
         self.controller.publisher.subscribe(Events.popup_event)(self._on_error)
         self.controller.publisher.subscribe(Events.image_event)(self._on_new_image)
+        self.controller.publisher.subscribe(Events.detector_loaded)(self.destroy_progress_bar)
+        self.controller.publisher.subscribe(Events.start_progress_bar)(self.open_progress_bar)
 
     def exit(self):
         self.controller.stop(to_exit=True)
         exit(1)
+
+    def open_progress_bar(self):
+        self.progress_bar = ProgressBarScreen(self.root)
+        self.progress_bar.run()
+
+    def destroy_progress_bar(self):
+        if self.progress_bar is not None:
+            self.progress_bar.destroy()
+            self.progress_bar = None
+            self._on_info('Detector loaded.\nWaiting for images from microscope.')
+
 
     def create_window(self, title, dimensions):
         root = Tk()
@@ -71,13 +86,9 @@ class MainScreen:
         menu.place(relx=0.1, rely=0.15, relwidth=0.3, relheight=0.8, anchor='nw')
         return menu, root
 
-    def run_controller(self):
-        self.controller.run()
-        if self.controller.executing:
-            self.open_progress_bar()
 
     def create_execute_button(self):
-        execute_button = Button(self.menu, text="Execute", command=self.run_controller)
+        execute_button = Button(self.menu, text="Execute", command=self.controller.run)
         execute_button.place(relx=0.15, rely=0.05, relwidth=0.5, anchor='nw')
         return execute_button
 
@@ -190,9 +201,6 @@ class MainScreen:
         user_settings.place(relx=0.15, rely=0.75, relwidth=0.5, relheight=0.05, anchor='nw')
         return user_settings
 
-    def open_progress_bar(self):
-        ProgressBarScreen().run()
-
     def set_problem_domain(self, event):
         choice = event.widget.current()
         microscopes = self.controller.set_problem_domain(choice)
@@ -212,6 +220,9 @@ class MainScreen:
 
     def _on_error(self, error_message):
         messagebox.showerror('Error', error_message)
+
+    def _on_info(self, info_message):
+        messagebox.showinfo('Info', info_message)
 
     def _on_new_image(self, image):
         tk_image = ImageTk.PhotoImage(Image.fromarray(image).resize((IMAGE_CANVAS_WIDTH, IMAGE_CANVAS_HEIGHT), Image.ANTIALIAS))

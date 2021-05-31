@@ -91,9 +91,11 @@ class EDAdapterDefault(EDAdapter):
                 cv2.circle(region_im, (vals['xcenter'], vals['ycenter']), 4, (0, 255, 0), -1)
                 cv2.rectangle(region_im, (vals['xmin'], vals['ymax']), (vals['xmax'], vals['ymin']), (0, 0, 255), 1)
         if detection is not None:
+            cv2.circle(region_im, (detection['xcenter'], detection['ycenter']), 4, (255, 0, 0), -1)
             cv2.rectangle(region_im, (detection['xmin'], detection['ymax']), (detection['xmax'], detection['ymin']), (255, 0, 0), 1)
 
         processed_im[ymin:ymax, xmin:xmax] = region_im
+        cv2.rectangle(processed_im, (xmin, ymax), (xmax, ymin), (0, 0, 0), 1)
         self.publisher.publish(Events.image_event, processed_im)
         self.publisher.publish(Events.model_detection_event, detection)
 

@@ -26,3 +26,6 @@ class Events(Enum):
     popup_event = 'popup'
     image_event = 'image'
     model_detection_event = 'model_detection'
+    detector_loaded = 'detector_loaded'
+    start_progress_bar = 'start_progress_bar'
+

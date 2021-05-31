@@ -140,8 +140,10 @@ class Controller:
         self.am_adapter.activate_microscope()
         self.ed_adapter.publisher.subscribe(Events.model_detection_event)(self.forward_model_detection)
         self.ed_adapter.publisher.subscribe(Events.image_event)(self.forward_image)
+        self.ed_adapter.publisher.subscribe(Events.detector_loaded)(self.detector_loaded)
 
         t.start()
+        self.publisher.publish(Events.start_progress_bar)
 
     def forward_image(self, image):
         """
@@ -149,6 +151,10 @@ class Controller:
         This method publishes an image event for the controller's publisher with the image parameter.
         """
         self.publisher.publish(Events.image_event, image)
+
+    def detector_loaded(self):
+        self.publisher.publish(Events.detector_loaded)
+
 
     def forward_model_detection(self, coords=None):
         """
