@@ -1,5 +1,4 @@
 from time import sleep
-
 import cv2
 import numpy as np
 from skimage import io
@@ -24,8 +23,7 @@ class EDAdapterDefault(EDAdapter):
         self.regions = None
 
     def initialize_adapter(self):
-        with open(os.path.join(self.working_dir, ROI_PATH)) as f:
-            self.regions = f.read().split('\n')
+        self.regions = parse_roi(os.path.join(self.working_dir, ROI_PATH))
 
     def get_image_path(self):
         return os.path.join(self.working_dir, IMAGES_PATH)
@@ -63,7 +61,7 @@ class EDAdapterDefault(EDAdapter):
         return image_to_8bit_equalized(im)
 
     def feed_to_event_detector(self, processed_im, full_path):
-        xmin, xmax, ymin, ymax = tuple(map(lambda x: int(x), self.regions[0].split(',')))
+        xmin, xmax, ymin, ymax = self.regions[0]
         region = {'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax}
         request = protocol.create_detection_request(full_path, region)
         self.client.send_request(request)
@@ -112,3 +110,22 @@ def image_to_8bit_equalized(image):
     img8 = (image / ratio).astype('uint8')
 
     return img8
+
+test_path = r'C:\Users\viktor_koukouliev\Downloads\roi.rgm'
+
+def parse_roi(path):
+    # xmin ymin width height
+    with open(path) as f:
+        lines = f.read().split('\n')
+        rects = []
+        for line in lines:
+            line = line.split(',')
+            xmin = int(line[2].strip().split(' ')[1])
+            ymin = int(line[2].strip().split(' ')[2])
+            width = int(line[6].strip().split(' ')[2])
+            height = int(line[6].strip().split(' ')[3])
+            rects.append((xmin, xmin+width, ymin, ymin+height))
+    return rects
+
+
+
