@@ -119,12 +119,13 @@ def parse_roi(path):
         lines = f.read().split('\n')
         rects = []
         for line in lines:
-            line = line.split(',')
-            xmin = int(line[2].strip().split(' ')[1])
-            ymin = int(line[2].strip().split(' ')[2])
-            width = int(line[6].strip().split(' ')[2])
-            height = int(line[6].strip().split(' ')[3])
-            rects.append((xmin, xmin+width, ymin, ymin+height))
+            if line != '':
+                line = line.split(',')
+                xmin = int(line[2].strip().split(' ')[1])
+                ymin = int(line[2].strip().split(' ')[2])
+                width = int(line[6].strip().split(' ')[2])
+                height = int(line[6].strip().split(' ')[3])
+                rects.append((xmin, xmin+width, ymin, ymin+height))
     return rects
 
 
