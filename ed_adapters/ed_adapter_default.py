@@ -39,6 +39,7 @@ class EDAdapterDefault(EDAdapter):
             raise DirectoryNotSetUpException(e)
 
         if len(files) > 1:
+            self.publisher.publish(Events.ambiguous_files)
             raise AmbiguousFilesException()
         if not files:
             return None, None

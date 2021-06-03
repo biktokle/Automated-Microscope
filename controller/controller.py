@@ -132,8 +132,8 @@ class Controller:
         self.am_adapter, self.ed_adapter = self.create_adapters()
 
         # delete images from working dir
-        for file in os.listdir(self.ed_adapter.get_image_path()):
-            os.remove(os.path.join(self.ed_adapter.get_image_path(), file))
+        # for file in os.listdir(self.ed_adapter.get_image_path()):
+        #     os.remove(os.path.join(self.ed_adapter.get_image_path(), file))
 
         t = Thread(target=self.ed_adapter.adapter_loop)
 
@@ -141,6 +141,7 @@ class Controller:
         self.ed_adapter.publisher.subscribe(Events.model_detection_event)(self.forward_model_detection)
         self.ed_adapter.publisher.subscribe(Events.image_event)(self.forward_image)
         self.ed_adapter.publisher.subscribe(Events.detector_loaded)(self.detector_loaded)
+        self.ed_adapter.publisher.subscribe(Events.ambiguous_files)(self.ambiguous_files)
 
         t.start()
         self.publisher.publish(Events.start_progress_bar)
@@ -155,6 +156,10 @@ class Controller:
     def detector_loaded(self):
         self.publisher.publish(Events.detector_loaded)
 
+    def ambiguous_files(self):
+        self.stop()
+        self.publisher.publish(Events.popup_event, '''More than 1 files in the image directory.
+        Clear directory and execute the program again.''')
 
     def forward_model_detection(self, coords=None):
         """
