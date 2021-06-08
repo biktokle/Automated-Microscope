@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from subprocess import Popen
+import subprocess
+
 
 from communication import protocol, client
 from notification.publisher import Publisher, Events
@@ -51,7 +52,8 @@ class EDAdapter(ABC):
         This method sets up a communication channel with the event detector program.
         """
         free_port = client.get_free_port()
-        process = Popen(f'python "{self.detector.detector_path}" {client.get_free_port()}')
+        process = subprocess.Popen(f'python "{self.detector.detector_path}" {client.get_free_port()}',
+                                   creationflags=subprocess.CREATE_NO_WINDOW, close_fds=True)
         self.client = client.Client(free_port)
         self.publisher.publish(Events.detector_loaded)
         return process

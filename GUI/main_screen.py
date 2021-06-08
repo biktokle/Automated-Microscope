@@ -1,16 +1,13 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
-
 from PIL import Image, ImageTk
-
 from GUI.progress_bar_screen import ProgressBarScreen
 from GUI.user_settings_screen import UserSettingsScreen
 from controller.controller import Controller
 from tkinter import filedialog
-
 from notification.publisher import Events
-
+import sys
 IMAGE_CANVAS_WIDTH = 1000
 IMAGE_CANVAS_HEIGHT = 1000
 IMAGE_BACKGROUND = "gray"
@@ -52,7 +49,7 @@ class MainScreen:
 
     def exit(self):
         self.controller.stop(to_exit=True)
-        exit(1)
+        sys.exit(1)
 
     def open_progress_bar(self):
         self.progress_bar = ProgressBarScreen(self.root)
@@ -229,5 +226,3 @@ class MainScreen:
         self.image_canvas.create_image(0, 0, image=tk_image, anchor="nw")
 
 
-if __name__ == '__main__':
-    MainScreen().run()

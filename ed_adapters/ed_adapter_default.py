@@ -23,7 +23,7 @@ class EDAdapterDefault(EDAdapter):
         self.regions = None
 
     def initialize_adapter(self):
-        self.regions = parse_roi(os.path.join(self.working_dir, ROI_PATH))
+        pass
 
     def get_image_path(self):
         return os.path.join(self.working_dir, IMAGES_PATH)
@@ -48,7 +48,7 @@ class EDAdapterDefault(EDAdapter):
         # Sleep because sometimes reading fails
         sleep(0.01)
         image = None
-
+        self.regions = parse_roi(os.path.join(self.working_dir, ROI_PATH))
         while image is None:
             try:
                 image = io.imread(full_path)
