@@ -5,18 +5,18 @@ from ed_adapters.ed_adapter_default import EDAdapterDefault
 from entities.event_detector import EventDetector
 from entities.microscope_manual import MicroscopeManual
 from entities.user_settings import UserSettings
-from logs.log_setup import setup_loggers
+# from logs.log_setup import setup_loggers
 from am_adapters.am_adapter_avi import AMAdapterAVI
-import logging
+# import logging
 from threading import Thread
 
 from notification.publisher import Publisher, Events
 
 parent_dir = os.path.split(os.getcwd())[0]
 sys.path.extend([x[0] for x in os.walk(parent_dir) if '.git' not in x[0]])
-setup_loggers()
-info_logger = logging.getLogger('info')
-error_logger = logging.getLogger('exceptions')
+# setup_loggers()
+# info_logger = logging.getLogger('info')
+# error_logger = logging.getLogger('exceptions')
 
 AVI_SETTINGS = ['intervals', 't_points', 'channel', 'exposure', 'laser_power']
 
