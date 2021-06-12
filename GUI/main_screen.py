@@ -20,7 +20,7 @@ MAIN_WINDOW_DIMENSIONS = '1800x1000'
 
 TITLE = 'Automated Microscope'
 
-PLACEHOLDER = 'Set Directory'
+PLACEHOLDER = 'Set Working Directory'
 PLACEHOLDER_DETECTORS = 'Set Detectors Directory'
 
 SOFTWARE_CONFIG_PATH = './software_config.json'

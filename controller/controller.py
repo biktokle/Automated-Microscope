@@ -228,6 +228,14 @@ class Controller:
             if not to_exit:
                 self.publisher.publish(Events.popup_event, "The system is not running")
 
+    def get_microscope_adapter(self):
+        if self.microscope == 'AVI':
+            return AMAdapterAVI(self.user_settings, self.working_dir)
+
+        # Add Microscopes Here
+        else:
+            raise Exception("Unknown microscope type")
+
     def create_adapters(self):
-        return AMAdapterAVI(self.user_settings, self.working_dir),\
+        return self.get_microscope_adapter(),\
                EDAdapterDefault(self.chosen_detector, self.working_dir)
