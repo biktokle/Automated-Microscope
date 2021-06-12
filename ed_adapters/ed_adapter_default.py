@@ -21,6 +21,7 @@ class EDAdapterDefault(EDAdapter):
     def __init__(self, detector, working_dir):
         super().__init__(detector, working_dir)
         self.regions = None
+        self.region_index = 0
 
     def initialize_adapter(self):
         pass
@@ -48,7 +49,8 @@ class EDAdapterDefault(EDAdapter):
         # Sleep because sometimes reading fails
         sleep(0.01)
         image = None
-        self.regions = parse_roi(os.path.join(self.working_dir, ROI_PATH))
+        if self.regions is None:
+            self.regions = parse_roi(os.path.join(self.working_dir, ROI_PATH))
         while image is None:
             try:
                 image = io.imread(full_path)
@@ -62,7 +64,7 @@ class EDAdapterDefault(EDAdapter):
         return image_to_8bit_equalized(im)
 
     def feed_to_event_detector(self, processed_im, full_path):
-        xmin, xmax, ymin, ymax = self.regions[0]
+        xmin, xmax, ymin, ymax = self.regions[self.region_index]
         region = {'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax}
         request = protocol.create_detection_request(full_path, region)
         self.client.send_request(request)
@@ -90,6 +92,7 @@ class EDAdapterDefault(EDAdapter):
                 cv2.circle(region_im, (vals['xcenter'], vals['ycenter']), 4, (0, 255, 0), -1)
                 cv2.rectangle(region_im, (vals['xmin'], vals['ymax']), (vals['xmax'], vals['ymin']), (0, 0, 255), 1)
         if detection is not None:
+            self.region_index += 1
             cv2.circle(region_im, (detection['xcenter'], detection['ycenter']), 4, (255, 0, 0), -1)
             cv2.rectangle(region_im, (detection['xmin'], detection['ymax']), (detection['xmax'], detection['ymin']), (255, 0, 0), 1)
 
@@ -97,6 +100,9 @@ class EDAdapterDefault(EDAdapter):
         cv2.rectangle(processed_im, (xmin, ymax), (xmax, ymin), (0, 0, 0), 1)
         self.publisher.publish(Events.image_event, processed_im)
         self.publisher.publish(Events.model_detection_event, detection)
+
+        if self.region_index == len(self.regions):
+            self.publisher.publish(Events.ed_adapter_termination)
 
 
 

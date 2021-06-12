@@ -29,4 +29,5 @@ class Events(Enum):
     detector_loaded = 'detector_loaded'
     start_progress_bar = 'start_progress_bar'
     ambiguous_files = 'ambiguous_files'
+    ed_adapter_termination = 'ed_adapter_termination'
 

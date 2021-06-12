@@ -148,6 +148,7 @@ class Controller:
         self.ed_adapter.publisher.subscribe(Events.image_event)(self.forward_image)
         self.ed_adapter.publisher.subscribe(Events.detector_loaded)(self.detector_loaded)
         self.ed_adapter.publisher.subscribe(Events.ambiguous_files)(self.ambiguous_files)
+        self.ed_adapter.publisher.subscribe(Events.ed_adapter_termination)(self.stop)
 
         t.start()
         self.publisher.publish(Events.start_progress_bar)
