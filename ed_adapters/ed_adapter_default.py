@@ -11,7 +11,7 @@ from notification.publisher import Events
 from exceptions.exceptions import *
 
 IMAGES_PATH = 'images'
-ROI_PATH = 'regions_of_interest.rgm'
+ROI_PATH = 'roi.rgm'
 
 
 class EDAdapterDefault(EDAdapter):

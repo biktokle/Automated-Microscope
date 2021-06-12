@@ -13,12 +13,13 @@ DETECTOR_PATH = os.path.join(dirpath, '../test_resources/mock_detectors')
 WORK_DIR = os.path.join(dirpath, '../test_resources/tests_workdir')
 MOCK_SETTINGS = ['settings1', 'settings2', 'settings3', 'settings4']
 MOCK_PROBLEM = 'Mock_Problem'
+SOFTWARE_CONFIG_PATH = os.path.join(dirpath, '../test_resources/software_config.json')
 
 
 class TestController(TestCase):
 
     def setUp(self):
-        self.controller = Controller()
+        self.controller = Controller(SOFTWARE_CONFIG_PATH)
         self.controller.create_adapters = MagicMock(return_value=(MagicMock(), MagicMock()))
         self.controller.set_detectors_path(DETECTOR_PATH)
         self.controller.problem_domains.append(MOCK_PROBLEM)

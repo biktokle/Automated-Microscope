@@ -23,12 +23,13 @@ TITLE = 'Automated Microscope'
 PLACEHOLDER = 'Set Directory'
 PLACEHOLDER_DETECTORS = 'Set Detectors Directory'
 
+SOFTWARE_CONFIG_PATH = './software_config.json'
 
 class MainScreen:
 
     def __init__(self):
         self.images = []
-        self.controller = Controller()
+        self.controller = Controller(SOFTWARE_CONFIG_PATH)
         self.menu, self.root = self.create_window(TITLE, MAIN_WINDOW_DIMENSIONS)
         self.execute_button = self.create_execute_button()
         self.stop_button = self.create_stop_button()

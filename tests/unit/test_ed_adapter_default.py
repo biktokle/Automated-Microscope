@@ -31,6 +31,7 @@ class TestEDAdapterDefault(TestCase):
 
     @patch('skimage.io.imread')
     def test_consume_image_success(self, imread):
+        self.fs.create_file(os.path.join(self.working_dir, 'roi.rgm'))
         self.fs.create_file(os.path.join(self.working_dir, IMAGES_PATH, 'image1.tif'))
         imread.return_value = np.zeros((1, 1, 1, 1))
         image, path = self.ed_adapter.consume_image()

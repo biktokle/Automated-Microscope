@@ -19,8 +19,6 @@ sys.path.extend([x[0] for x in os.walk(parent_dir) if '.git' not in x[0]])
 # info_logger = logging.getLogger('info')
 # error_logger = logging.getLogger('exceptions')
 
-SOFTWARE_CONFIG_FILE = './software_config.json'
-
 # AVI_SETTINGS = ['intervals', 't_points', 'channel', 'exposure', 'laser_power']
 
 
@@ -55,7 +53,7 @@ class Controller:
     """
     This class is responsible to the communicate between the different components of the system.
     """
-    def __init__(self):
+    def __init__(self, config_file_path):
         self.executing = False          # a boolean field that indicates whether the microscope is under execution.
         self.am_adapter = None          # the am_adapter of the system.
         self.ed_adapter = None          # the ed_adapter of the system.
@@ -72,13 +70,10 @@ class Controller:
         self.domain_microscopes = None
         self.microscopes = None
 
-        self.parse_software_config()
+        self.parse_software_config(config_file_path)
         # self.problem_domains = ["Cell Fusion - Fly Spit"]
         # self.domain_microscopes = {"Cell Fusion - Fly Spit": ["AVI"]}
         # self.microscopes = {("Cell Fusion - Fly Spit", "AVI"): MicroscopeManual(AVI_SETTINGS)}
-        print(self.problem_domains)
-        print(self.domain_microscopes)
-        print(self.microscopes)
 
     @check_if_running
     def get_detectors(self):
@@ -190,8 +185,8 @@ class Controller:
             settings[key] = value
         self.user_settings = UserSettings(settings)
 
-    def parse_software_config(self):
-        with open(SOFTWARE_CONFIG_FILE, 'r') as j:
+    def parse_software_config(self, config_file_path):
+        with open(config_file_path, 'r') as j:
             software_config = json.load(j)
             self.problem_domains = list(software_config.keys())
             domain_microscopes = {}

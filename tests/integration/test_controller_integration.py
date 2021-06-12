@@ -16,12 +16,12 @@ WORK_DIR = os.path.join(dirpath, '../test_resources/tests_workdir')
 MOCK_DIR = 'Just/A/Mock/Directory'
 MOCK_SETTINGS = ['settings1', 'settings2', 'settings3', 'settings4']
 MOCK_PROBLEM = 'Mock_Problem'
-
+SOFTWARE_CONFIG_PATH = os.path.join(dirpath, '../test_resources/software_config.json')
 
 class TestController(TestCase):
 
     def setUp(self):
-        self.controller = Controller()
+        self.controller = Controller(SOFTWARE_CONFIG_PATH)
         adapter_mock = MagicMock()
         adapter_mock.get_image_path = MagicMock(return_value=os.path.join(WORK_DIR, IMAGES_PATH))
         self.controller.create_adapters = MagicMock(return_value=(adapter_mock, adapter_mock))
@@ -82,8 +82,7 @@ class TestController(TestCase):
         assert cond1 and cond2 and cond3
 
     def test_set_detector(self):
-        detectors_path = os.path.join(Path(__file__).parent.parent.parent.parent, 'event_detectors')
-        self.controller.set_detectors_path(detectors_path)
+        self.controller.set_detectors_path(DETECTOR_PATH)
 
         self.controller.set_detector(0)
         cond1 = self.controller.chosen_detector == self.controller.detectors[0]
