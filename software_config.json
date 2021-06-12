@@ -1,0 +1,11 @@
+{
+    "Cell Fusion - Fly Spit": {
+      "AVI": [
+        "intervals",
+        "t_points",
+        "channel",
+        "exposure",
+        "laser_power"
+      ]
+    }
+}

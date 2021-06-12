@@ -183,8 +183,15 @@ class MainScreen:
             if widget.get() == widget_text:
                 widget.delete(0, 'end')
 
+    def stringify_user_settings(self, settings):
+        stringified = ''
+        for setting in settings:
+            stringified += '\n' + setting + ': ' + str(settings[setting])
+
+        return stringified
+
     def set_user_settings(self):
-        self.us_description['text'] = 'User Settings:\n' + str(self.controller.get_user_settings())
+        self.us_description['text'] = 'User Settings:' + self.stringify_user_settings(self.controller.get_user_settings())
 
     def open_user_settings(self):
         if self.choose_microscope.get() != "Choose Microscope":

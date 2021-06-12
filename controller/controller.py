@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 
@@ -18,7 +19,9 @@ sys.path.extend([x[0] for x in os.walk(parent_dir) if '.git' not in x[0]])
 # info_logger = logging.getLogger('info')
 # error_logger = logging.getLogger('exceptions')
 
-AVI_SETTINGS = ['intervals', 't_points', 'channel', 'exposure', 'laser_power']
+SOFTWARE_CONFIG_FILE = './software_config.json'
+
+# AVI_SETTINGS = ['intervals', 't_points', 'channel', 'exposure', 'laser_power']
 
 
 def check_if_running(func):
@@ -65,9 +68,17 @@ class Controller:
         self.publisher = Publisher()    # the controller's publisher
         self.chosen_detector = None     # the detector that has been chosen to the next execution.
 
-        self.problem_domains = ["Cell Fusion - Fly Spit"]
-        self.domain_microscopes = {"Cell Fusion - Fly Spit": ["AVI"]}
-        self.microscopes = {("Cell Fusion - Fly Spit", "AVI"): MicroscopeManual(AVI_SETTINGS)}
+        self.problem_domains = None
+        self.domain_microscopes = None
+        self.microscopes = None
+
+        self.parse_software_config()
+        # self.problem_domains = ["Cell Fusion - Fly Spit"]
+        # self.domain_microscopes = {"Cell Fusion - Fly Spit": ["AVI"]}
+        # self.microscopes = {("Cell Fusion - Fly Spit", "AVI"): MicroscopeManual(AVI_SETTINGS)}
+        print(self.problem_domains)
+        print(self.domain_microscopes)
+        print(self.microscopes)
 
     @check_if_running
     def get_detectors(self):
@@ -178,6 +189,23 @@ class Controller:
         for key, value in zip(self.microscopes[(self.problem_domain, self.microscope)].settings_keys, values):
             settings[key] = value
         self.user_settings = UserSettings(settings)
+
+    def parse_software_config(self):
+        with open(SOFTWARE_CONFIG_FILE, 'r') as j:
+            software_config = json.load(j)
+            self.problem_domains = list(software_config.keys())
+            domain_microscopes = {}
+            for pd in software_config:
+                domain_microscopes[pd] = list(software_config[pd].keys())
+
+            self.domain_microscopes = domain_microscopes
+
+            microscopes = {}
+            for pd in software_config:
+                for mic in software_config[pd]:
+                    microscopes[(pd, mic)] = MicroscopeManual(software_config[pd][mic])
+
+            self.microscopes = microscopes
 
     def get_event_detector(self):
         """
