@@ -66,21 +66,19 @@ class EDAdapterDefault(EDAdapter):
     def feed_to_event_detector(self, processed_im, full_path):
         xmin, xmax, ymin, ymax = self.regions[self.region_index]
         region = {'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax}
-        request = protocol.create_detection_request(full_path, region)
+        region_im = processed_im[ymin:ymax, xmin:xmax]
+        request = protocol.create_image_detection_request(region_im.tolist())
         self.client.send_request(request)
-        response = self.client.get_response()
         while os.path.exists(full_path):
             try:
                 os.remove(full_path)
             except Exception as e:
                 pass
-
+        response = self.client.get_response()
         detect_response = protocol.parse_response(response)
 
         detection = detect_response[0]
         b_boxes = detect_response[1]
-
-        region_im = processed_im[ymin:ymax, xmin:xmax]
 
         if b_boxes is not None:
             for (objectID, vals) in b_boxes.items():
@@ -88,7 +86,7 @@ class EDAdapterDefault(EDAdapter):
                 # object on the output frame
                 text = "{}".format(objectID)
                 cv2.putText(region_im, text, (vals['xcenter'] - 10, vals['ycenter'] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (255, 0, 0), 2)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
                 cv2.circle(region_im, (vals['xcenter'], vals['ycenter']), 4, (0, 255, 0), -1)
                 cv2.rectangle(region_im, (vals['xmin'], vals['ymax']), (vals['xmax'], vals['ymin']), (0, 0, 255), 1)
         if detection is not None:
