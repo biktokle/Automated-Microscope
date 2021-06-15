@@ -229,7 +229,8 @@ class MainScreen:
         messagebox.showinfo('Info', info_message)
 
     def _on_new_image(self, image):
-        tk_image = ImageTk.PhotoImage(Image.fromarray(image).resize((IMAGE_CANVAS_WIDTH, IMAGE_CANVAS_HEIGHT), Image.ANTIALIAS))
+        tk_image = ImageTk.PhotoImage(Image.fromarray(image).resize((self.image_canvas.winfo_width(),
+                                                                    self.image_canvas.winfo_height()), Image.ANTIALIAS))
         self.images.append(tk_image)
         self.image_canvas.create_image(0, 0, image=tk_image, anchor="nw")
 
