@@ -126,7 +126,9 @@ class Controller:
         self.detectors = []
         for name in os.listdir(self.detectors_path):
             if os.path.isdir(os.path.join(self.detectors_path, name)):
-                self.detectors.append(EventDetector(os.path.join(self.detectors_path, name)))
+                detector = EventDetector(os.path.join(self.detectors_path, name))
+                if detector.detector_path is not None:
+                    self.detectors.append(detector)
 
     @check_if_parameters_set
     @check_if_running
