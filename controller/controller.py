@@ -113,7 +113,12 @@ class Controller:
         :param path: a path to working directory.
         This method sets the path of the working directory for the next execution.
         """
-        self.working_dir = r'{}'.format(path)
+        path = r'{}'.format(path)
+        if 'images' not in os.listdir(path):
+            self.publisher.publish(Events.popup_event, 'Workir does not match the needed format')
+            self.working_dir = None
+        else:
+            self.working_dir = path
 
     @check_if_running
     def set_detectors_path(self, path):
@@ -127,7 +132,7 @@ class Controller:
         for name in os.listdir(self.detectors_path):
             if os.path.isdir(os.path.join(self.detectors_path, name)):
                 detector = EventDetector(os.path.join(self.detectors_path, name))
-                if detector.detector_path is not None:
+                if detector.detector_path is not None and detector.description:
                     self.detectors.append(detector)
 
     @check_if_parameters_set
