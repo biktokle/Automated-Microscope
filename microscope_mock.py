@@ -17,10 +17,11 @@ def image_to_8bit_equalized(image):
 
 original_im = os.path.join(ROOT_PATH, 'example1.tif')
 im = io.imread(original_im)
-for i, image in enumerate(im[240:260]):
+for i, image in enumerate(im):
     time.sleep(2)
     if image.shape[0] <= 3:
         image = image[1]
-    frame = np.dstack((np.zeros((len(image), len(image[0]))), image,  np.zeros((len(image), len(image[0])))))
+    frame = image
+    # frame = np.dstack((np.zeros((len(image), len(image[0]))), image,  np.zeros((len(image), len(image[0])))))
     io.imsave(os.path.join(IMAGES_PATH, f'{i}.tif'), frame)
 

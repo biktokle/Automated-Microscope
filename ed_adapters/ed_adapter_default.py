@@ -9,7 +9,6 @@ import os
 
 from notification.publisher import Events
 from exceptions.exceptions import *
-
 IMAGES_PATH = 'images'
 ROI_PATH = 'roi.rgm'
 
@@ -61,6 +60,7 @@ class EDAdapterDefault(EDAdapter):
         return image, full_path
 
     def process_image(self, im):
+        im = np.dstack((np.zeros((len(im), len(im[0]))), im, np.zeros((len(im), len(im[0])))))
         return image_to_8bit_equalized(im)
 
     def feed_to_event_detector(self, processed_im, full_path):
@@ -76,7 +76,6 @@ class EDAdapterDefault(EDAdapter):
                 pass
         response = self.client.get_response()
         detect_response = protocol.parse_response(response)
-
         detection = detect_response[0]
         b_boxes = detect_response[1]
 
@@ -90,8 +89,9 @@ class EDAdapterDefault(EDAdapter):
                 cv2.circle(region_im, (vals['xcenter'], vals['ycenter']), 4, (0, 255, 0), -1)
                 cv2.rectangle(region_im, (vals['xmin'], vals['ymax']), (vals['xmax'], vals['ymin']), (0, 0, 255), 1)
         if detection is not None:
+            request = protocol.create_reset_request()
+            self.client.send_request(request)
             self.region_index += 1
-            cv2.circle(region_im, (detection['xcenter'], detection['ycenter']), 4, (255, 0, 0), -1)
             cv2.rectangle(region_im, (detection['xmin'], detection['ymax']), (detection['xmax'], detection['ymin']), (255, 0, 0), 1)
 
         processed_im[ymin:ymax, xmin:xmax] = region_im
