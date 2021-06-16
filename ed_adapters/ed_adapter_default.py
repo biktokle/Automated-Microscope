@@ -93,6 +93,12 @@ class EDAdapterDefault(EDAdapter):
             self.client.send_request(request)
             self.region_index += 1
             cv2.rectangle(region_im, (detection['xmin'], detection['ymax']), (detection['xmax'], detection['ymin']), (255, 0, 0), 1)
+            detection['xmin'] = detection['xmin'] + xmin
+            detection['xmax'] = detection['xmax'] + xmin
+            detection['ymin'] = detection['ymin'] + ymin
+            detection['ymax'] = detection['ymax'] + ymin
+            detection['xcenter'] = detection['xcenter'] + xmin
+            detection['ycenter'] = detection['ycenter'] + ymin
 
         processed_im[ymin:ymax, xmin:xmax] = region_im
         cv2.rectangle(processed_im, (xmin, ymax), (xmax, ymin), (0, 0, 0), 1)
