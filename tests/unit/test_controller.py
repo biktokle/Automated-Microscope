@@ -11,6 +11,7 @@ from notification.publisher import Events
 dirpath = os.path.dirname(__file__)
 DETECTOR_PATH = os.path.join(dirpath, '../test_resources/mock_detectors')
 WORK_DIR = os.path.join(dirpath, '../test_resources/tests_workdir')
+BAD_WORK_DIR = os.path.join(dirpath, '../test_resources/bad_workdir')
 MOCK_SETTINGS = ['settings1', 'settings2', 'settings3', 'settings4']
 MOCK_PROBLEM = 'Mock_Problem'
 SOFTWARE_CONFIG_PATH = os.path.join(dirpath, '../test_resources/software_config.json')
@@ -69,10 +70,13 @@ class TestController(TestCase):
         self.controller.set_working_dir(WORK_DIR)
         assert self.controller.working_dir == WORK_DIR
 
+    def test_set_bad_working_dir(self):
+        self.controller.set_working_dir(BAD_WORK_DIR)
+        assert self.controller.working_dir is None
+
     def test_set_detectors_path(self):
         self.controller.set_detectors_path(DETECTOR_PATH)
         controller_detectors = [detector.name for detector in self.controller.detectors]
-
         detectors = os.listdir(DETECTOR_PATH)
         assert controller_detectors == detectors
 

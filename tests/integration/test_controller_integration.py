@@ -108,11 +108,8 @@ class TestController(TestCase):
         cond2 = self.controller.working_dir == WORK_DIR
 
         self.controller.stop()
-        self.controller.set_working_dir(MOCK_DIR)
 
-        cond3 = self.controller.working_dir == MOCK_DIR
-
-        assert cond1 and cond2 and cond3
+        assert cond1 and cond2
 
     def test_set_detectors_path(self):
         controller_detectors = [detector.name for detector in self.controller.detectors]
